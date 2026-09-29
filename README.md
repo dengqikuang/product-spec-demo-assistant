@@ -8,6 +8,14 @@
 
 上图为概念示意：先收敛需求规则，再形成可开发验收的 SPEC，最后用三栏 Demo 将页面、交互状态与规则同步展示给研发和协作方。
 
+## 效果示例
+
+仓库附带了一个脱敏的 [会员积分兑换 SPEC](examples/membership-points/SPEC.md) 与对应的 [可交互 Demo](examples/membership-points/demo/index.html)。它覆盖选择权益、积分不足和兑换成功三种状态，并将 Spec 中的规则同步呈现在右栏。
+
+| 选择权益 | 兑换成功 |
+| --- | --- |
+| ![积分兑换页：选择权益](assets/readme/demo-selected-reward.png) | ![积分兑换页：兑换成功](assets/readme/demo-success.png) |
+
 ## 安装
 
 需要 Node.js 20 或更高版本，以及已安装的 Codex 桌面应用或 Codex CLI。
