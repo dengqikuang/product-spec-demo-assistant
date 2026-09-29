@@ -1,0 +1,34 @@
+<!-- LOCKED:MALL_STYLE:START -->
+<style id="mallShellStyles">
+    @scope ([data-page-panel][data-surface="mall-admin"]) {
+      :scope { background: #f5f6f8; color: #303133; font: 12px/1.4 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+      button { font: inherit; cursor: pointer; }
+      .admin-shell { display: grid; grid-template-columns: 74px 164px minmax(0, 1fr); min-height: 1120px; background: #f5f6f8; }
+      .admin-primary { display: grid; grid-template-rows: 76px minmax(0, 1fr); min-height: 0; background: #282a2d; color: #c7c9cf; }
+      .admin-brand { display: grid; place-items: center; border-bottom: 1px solid #36383d; color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -2px; }
+      .admin-primary-list { display: grid; align-content: start; gap: 2px; min-height: 0; overflow: auto; padding: 8px 0; }
+      .admin-primary-item { display: flex; align-items: center; justify-content: flex-start; gap: 6px; min-height: 36px; padding: 0 5px; border: 0; border-left: 3px solid transparent; color: inherit; background: transparent; font-size: 12px; text-align: left; white-space: nowrap; }
+      .admin-primary-item > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+      .admin-primary-item .demo-icon { width: 15px; height: 15px; }
+      .admin-primary-item[aria-current="true"] { border-left-color: #3b78ff; color: #fff; background: #2f65ef; }
+      .admin-account { display: none; }
+      .admin-secondary { overflow: auto; border-right: 1px solid #e4e7ed; background: #fff; }
+      .admin-secondary-title { display: flex; align-items: center; height: 48px; padding: 0 16px; border-bottom: 1px solid #eef0f4; color: #303133; font-size: 14px; font-weight: 650; }
+      .admin-menu-group { border-bottom: 1px solid #f0f1f3; }
+      .admin-menu-group > button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 38px; padding: 0 16px; border: 0; color: #555b66; background: #fff; text-align: left; }
+      .admin-secondary-item { display: block; width: 100%; min-height: 34px; padding: 8px 16px 8px 22px; border: 0; color: #555b66; background: transparent; text-align: left; }
+      .admin-secondary-item[aria-current="page"] { color: #3671f2; background: #eef4ff; font-weight: 600; }
+      .admin-workspace { min-width: 0; overflow: hidden; }
+      .admin-topbar { display: grid; grid-template-columns: 90px 1fr; min-height: 36px; border-bottom: 1px solid #e8ebef; background: #fff; }
+      .admin-current-module { display: grid; place-items: center; border-right: 1px solid #eef0f3; color: #353941; font-weight: 650; }
+      .admin-tabs { display: flex; align-items: stretch; overflow: hidden; white-space: nowrap; }
+      .admin-tab { display: inline-flex; align-items: center; gap: 6px; max-width: 160px; padding: 0 13px; border: 0; border-right: 1px solid #eef0f3; color: #6c7179; background: #fff; overflow: hidden; text-overflow: ellipsis; }
+      .admin-tab[aria-selected="true"] { color: #3572f5; background: #edf4ff; }
+      .admin-tab-close { color: #9ba1ab; font-size: 15px; line-height: 1; }
+      .admin-local-tabs { display: flex; gap: 28px; align-items: center; height: 38px; padding: 0 18px; border-bottom: 1px solid #eceef2; background: #fff; }
+      .admin-local-tab { height: 38px; border: 0; border-bottom: 2px solid transparent; color: #616773; background: transparent; }
+      .admin-local-tab[aria-selected="true"] { border-color: #3470ef; color: #3470ef; font-weight: 650; }
+      .admin-content-frame { display: grid; min-height: calc(1120px - 74px); padding: 20px 20px 28px; }
+    }
+</style>
+<!-- LOCKED:MALL_STYLE:END -->

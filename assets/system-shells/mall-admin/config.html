@@ -1,0 +1,25 @@
+<script>
+    window.DEMO_CONFIG = {
+      title: "商城后台页面模板",
+      overview: "按页面讲解本次需求的目标、功能变化与交互结果。",
+      pages: [{
+        id: "main",
+        surface: "mall-admin",
+        label: "待配置页面",
+        overview: "此处填写该页面要解决的问题和本次新增功能。",
+        reference: "用户提供的商城后台截图",
+        viewport: { width: 1791, height: 1120 },
+        p0: [],
+        visual: { status: "reference", baseline: "用户提供的商城后台截图", preserve: ["深色一级导航", "白色二级菜单", "双层顶部页签", "内容工作区位置与留白"], allowedChanges: ["当前一级模块", "二级菜单内容", "页签内容", "内容工作区"], cases: [{ id: "default", state: "default", description: "内容区占位符" }] },
+        states: [{ id: "default", label: "默认状态" }],
+        adminShell: { activeModule: "商品", activeSecondary: "商品管理", activeTab: "商品管理", activeLocalTab: "我的商品", secondary: [{ label: "商品库", children: ["商品管理", "商品分组", "商品标签", "商品页模板", "商品评价管理", "商品基础设置", "仓库设置", "商品批量设置", "商品榜单", "商品结算设置", "分润方案设置", "权益商品管理", "信息收集", "商品变更管理", "商品关联词", "商品参数设置"] }, { label: "电子卡券", children: [] }, { label: "组合商品", children: ["组合商品管理_bak", "组合商品管理", "组合商品首页"] }, { label: "销售商管理", children: [] }, { label: "业务员管理", children: [] }, { label: "中心仓", children: [] }], tabs: ["概况", "第三方应用", "店铺信息", "实名认证设置", "等级配置", "销售员管理", "商品管理", "组合商品管理"], localTabs: ["我的商品", "待选品"] },
+        notes: {
+          title: "待配置页面",
+          description: "商城后台统一外壳已就绪，业务内容尚未实现。",
+          groups: [{ title: "外壳规则", items: ["一级导航清单和图标由母版锁定，只通过 activeModule 切换选中项。", "根据已确认需求替换二级导航、页签、内容工作区与占位标记。"] }],
+          result: "完成业务页面后，操作需产生可观察的状态或数据变化。",
+          boundary: "这是母版占位内容，不能作为交付 Demo。"
+        }
+      }]
+    };
+  </script>

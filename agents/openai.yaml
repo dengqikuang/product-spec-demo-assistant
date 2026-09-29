@@ -1,0 +1,4 @@
+interface:
+  display_name: "产品需求 Spec 与 Demo"
+  short_description: "面向产品经理的需求方案、Spec 与三栏 Demo 助手"
+  default_prompt: "使用 $product-demo 将这个产品需求整理为已确认 Spec，并按 P0 制作单 HTML 三栏 Demo。"

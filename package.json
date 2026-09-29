@@ -1,0 +1,15 @@
+{
+  "name": "product-spec-demo-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Codex skill for turning product requirements into developer-ready Specs and interactive HTML demos.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node scripts/test-demo.js",
+    "preview": "node scripts/build-shell-preview.js",
+    "scaffold": "node scripts/scaffold-demo.js"
+  },
+  "license": "MIT"
+}

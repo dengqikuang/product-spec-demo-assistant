@@ -1,0 +1,35 @@
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+
+# Local dependencies and package-manager caches
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+
+# Build output and test artifacts
+dist/
+build/
+coverage/
+.nyc_output/
+assets/shell-preview/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+.cache/
+
+# Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo

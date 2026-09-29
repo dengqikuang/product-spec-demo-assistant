@@ -1,0 +1,15 @@
+<script>
+    const page = productDemo.getPage("main");
+    const shell = productDemo.getConfig().pages.find((item) => item.id === "main").adminShell;
+    const $ = (selector) => page.querySelector(selector);
+    const icon = (name) => `<span data-demo-icon="${name}"></span>`;
+    const renderContent = () => {
+      $("[data-admin-content]").innerHTML = `<section class="template-placeholder" data-template-placeholder="mall-admin-content"><div class="template-placeholder-inner">${icon("clipboard")}<strong>业务内容待根据本次需求实现</strong><p>保留商城后台的导航、二级菜单和页签结构；将此占位区替换为已确认的页面内容与 P0 交互。</p></div></section>`;
+    };
+    const renderShell = () => {
+      productDemo.renderMallAdminShell("main");
+      renderContent(); productDemo.hydrateIcons(page);
+    };
+    renderShell();
+    $("[data-admin-secondary]").addEventListener("click", (event) => { const item = [...page.querySelectorAll(".admin-secondary-item")].find(node => node.contains(event.target)); if (!item) return; shell.activeSecondary = item.textContent; shell.activeTab = item.textContent; if (!shell.tabs.includes(shell.activeTab)) shell.tabs.push(shell.activeTab); renderShell(); });
+  </script>

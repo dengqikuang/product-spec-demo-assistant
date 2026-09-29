@@ -1,0 +1,372 @@
+<!-- LOCKED:HEAD:START -->
+<!doctype html>
+<html lang="zh-CN" data-demo-shell="v2">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>需求原型</title>
+  <style id="demoShellStyles">
+    :root { --overview-width: 220px; --notes-width: 300px; --line: #e5e7eb; --surface: #fff; --canvas: #f3f4f6; --text: #111827; --muted: #6b7280; --accent: #2563eb; }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; margin: 0; }
+    body { color: var(--text); background: var(--canvas); font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; }
+    button { font: inherit; cursor: pointer; }
+    [hidden] { display: none !important; }
+    button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .cover { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 24px; background: #eef2f7; }
+    .cover-card { width: min(680px, 100%); padding: 46px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); text-align: center; box-shadow: 0 18px 50px rgb(15 23 42 / 12%); }
+    .cover-card h1 { margin: 0 0 24px; font-size: clamp(30px, 5vw, 48px); }
+    .primary { min-height: 40px; padding: 8px 20px; border: 0; border-radius: 8px; color: #fff; background: var(--accent); }
+    .app { display: grid; grid-template-rows: auto minmax(0, 1fr); height: 100vh; overflow: auto; }
+    .toolbar { display: flex; align-items: center; gap: 8px; min-width: calc(var(--overview-width) + var(--notes-width) + 320px); min-height: 50px; padding: 8px 14px; border-bottom: 1px solid var(--line); background: var(--surface); }
+    .toolbar-title { flex: 1; font-weight: 700; }
+    .toggle { min-height: 32px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 7px; color: #374151; background: #fff; }
+    .layout { display: grid; grid-template-columns: var(--overview-width) minmax(320px, 1fr) var(--notes-width); min-width: calc(var(--overview-width) + var(--notes-width) + 320px); min-height: 0; }
+    .hide-overview .layout { grid-template-columns: minmax(320px, 1fr) var(--notes-width); min-width: calc(var(--notes-width) + 320px); }
+    .hide-notes .layout { grid-template-columns: var(--overview-width) minmax(320px, 1fr); min-width: calc(var(--overview-width) + 320px); }
+    .hide-overview.hide-notes .layout { grid-template-columns: minmax(320px, 1fr); min-width: 320px; }
+    .hide-overview #overviewPanel, .hide-notes #notesPanel { display: none; }
+    .panel { min-width: 0; overflow: auto; background: var(--surface); }
+    #overviewPanel { border-right: 1px solid var(--line); }
+    #notesPanel { border-left: 1px solid var(--line); }
+    .heading { position: sticky; z-index: 3; top: 0; margin: 0; padding: 13px 16px; border-bottom: 1px solid var(--line); background: rgb(255 255 255 / 96%); font-size: 14px; }
+    .nav { display: grid; gap: 4px; padding: 10px; }
+    .nav button { padding: 9px 10px; border: 0; border-radius: 7px; color: #374151; background: transparent; text-align: left; }
+    .nav button[aria-current="page"] { color: var(--accent); background: #eff6ff; font-weight: 650; }
+    .prototype { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; overflow: hidden; isolation: isolate; background: var(--canvas); }
+    .prototype-content { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+    .product-stage { display: grid; place-items: start center; width: max-content; min-width: 100%; min-height: 100%; padding: 20px; }
+    [data-page-panel] { position: relative !important; contain: layout paint !important; isolation: isolate !important; flex-shrink: 0; margin: 0 !important; overflow: auto !important; }
+    .overview-summary { margin: 0; padding: 14px 16px 4px; color: #4b5563; font-size: 13px; }
+    .nav button strong, .nav button small { display: block; }
+    .nav button small { margin-top: 5px; color: #6b7280; font-size: 12px; font-weight: 400; }
+    .demo-icon { display: inline-block; width: 1em; height: 1em; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; vertical-align: -0.125em; }
+    .notes { display: grid; gap: 18px; padding: 14px 16px 28px; }
+    .notes section { display: grid; gap: 6px; }
+    .notes h3, .notes h4, .notes p, .notes ul { margin: 0; }
+    .notes h3 { font-size: 13px; }
+    .notes h4 { font-size: 12px; }
+    .notes p, .notes ul { color: #4b5563; font-size: 13px; }
+    .notes ul { display: grid; gap: 5px; padding-left: 18px; }
+    .rule-groups { display: grid; gap: 12px; }
+  </style>
+<!-- LOCKED:HEAD:END -->
+
+<!-- INCLUDE:MALL_STYLE -->
+
+<!-- EDITABLE:PRODUCT_STYLE:START -->
+<!-- EDITABLE:PRODUCT_STYLE:END -->
+
+<!-- LOCKED:BODY:START -->
+</head>
+<body>
+  <section id="cover" class="cover">
+    <div class="cover-card">
+      <h1 id="coverTitle">需求原型</h1>
+      <button id="enterDemo" class="primary" type="button">进入原型</button>
+    </div>
+  </section>
+  <div id="app" class="app" hidden>
+    <header class="toolbar">
+      <div id="demoTitle" class="toolbar-title">需求原型</div>
+      <button id="toggleOverview" class="toggle" type="button" aria-pressed="true">概述：显示</button>
+      <button id="toggleNotes" class="toggle" type="button" aria-pressed="true">说明：显示</button>
+    </header>
+    <main class="layout">
+      <aside id="overviewPanel" class="panel">
+        <h2 class="heading">概述</h2>
+        <p id="overviewSummary" class="overview-summary"></p>
+        <nav id="overviewNav" class="nav" aria-label="页面导航"></nav>
+      </aside>
+      <section id="prototypePanel" class="panel prototype" tabindex="-1">
+        <h2 class="heading">原型</h2>
+        <div id="prototypeContent" class="prototype-content"><div class="product-stage">
+<!-- LOCKED:BODY:END -->
+
+<!-- EDITABLE:PRODUCT_HTML:START -->
+<!-- EDITABLE:PRODUCT_HTML:END -->
+
+<!-- LOCKED:NOTES:START -->
+        </div></div>
+      </section>
+      <aside id="notesPanel" class="panel">
+        <h2 class="heading">说明</h2>
+        <div class="notes">
+          <section><h3 id="notesTitle">页面说明</h3><p id="notesDescription"></p></section>
+          <section><h3>业务规则</h3><div id="notesRules" class="rule-groups"></div></section>
+          <section><h3>交互结果</h3><p id="notesResult"></p></section>
+          <section><h3>Demo 边界</h3><p id="notesBoundary"></p></section>
+        </div>
+      </aside>
+    </main>
+  </div>
+<!-- LOCKED:NOTES:END -->
+
+<!-- EDITABLE:CONFIG:START -->
+<!-- EDITABLE:CONFIG:END -->
+
+<!-- LOCKED:RUNTIME:START -->
+  <script id="demoShellRuntime">
+    (() => {
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+      const config = window.DEMO_CONFIG;
+      const DEMO_ICONS = Object.freeze({
+        "arrow-left": "M19 12H5M12 19l-7-7 7-7",
+        search: "m21 21-4.35-4.35M10.75 18a7.25 7.25 0 1 1 0-14.5 7.25 7.25 0 0 1 0 14.5Z",
+        filter: "M4 5h16M7 12h10m-7 7h4",
+        sort: "M8 6h8M8 12h5M8 18h2M16 4l3 3-3 3M16 14l3 3-3 3",
+        more: "M5 12h.01M12 12h.01M19 12h.01",
+        close: "m6 6 12 12M18 6 6 18",
+        "chevron-down": "m6 9 6 6 6-6",
+        "chevron-right": "m9 18 6-6-6-6",
+        plus: "M12 5v14M5 12h14",
+        edit: "m4 20 4.2-1 9.9-9.9a2 2 0 0 0-2.8-2.8L5.4 16.2 4 20ZM13.8 7.8l2.8 2.8",
+        delete: "M4 7h16M10 11v5M14 11v5M9 7l1-2h4l1 2m-9 0 1 13h10l1-13",
+        upload: "M12 16V4m0 0L8 8m4-4 4 4M5 19v1h14v-1",
+        download: "M12 4v12m0 0 4-4m-4 4-4-4M5 19v1h14v-1",
+        info: "M12 11v5m0-9h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+        "check-circle": "m8 12 2.5 2.5L16 9M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+        "alert-circle": "M12 8v5m0 3h.01M10.3 4.5 3.8 16a2 2 0 0 0 1.7 3h13a2 2 0 0 0 1.7-3L13.7 4.5a2 2 0 0 0-3.4 0Z",
+        "x-circle": "m9 9 6 6m0-6-6 6M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+        home: "m3 11 9-8 9 8v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9Zm6 10v-6h6v6",
+        store: "M4 9h16v12H4V9Zm-1-5h18l-1 5H4L3 4Zm5 5v12m8-12v12",
+        tag: "M20 13 13 20 4 11V4h7l9 9ZM8 8h.01",
+        bot: "M12 3v3m-6 5h12a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3Zm3 5h.01m6 0h.01M8 21v-1m8 1v-1",
+        clipboard: "M9 5h6m-5-2h4a1 1 0 0 1 1 1v2H9V4a1 1 0 0 1 1-1ZM6 5h12a2 2 0 0 1 2 2v13H4V7a2 2 0 0 1 2-2Z",
+        chart: "M4 20V10m6 10V4m6 16v-7m6 7V7",
+        user: "M20 21a8 8 0 0 0-16 0m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+        receipt: "M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6",
+        truck: "M3 6h11v10H3V6Zm11 4h4l3 3v3h-7v-6Zm-7 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+        gift: "M3 10h18v11H3V10Zm9 0v11M2 6h20v4H2V6Zm7-1a2 2 0 1 1-4 0c0-2 4 0 4 0Zm6 0a2 2 0 1 0 4 0c0-2-4 0-4 0Z",
+        video: "M4 6h11v12H4V6Zm11 4 5-3v10l-5-3",
+        wallet: "M4 6h16v14H4V6Zm0 4h16M16 15h2",
+        building: "M5 21V4h10v17M15 9h4v12M8 8h2m-2 4h2m-2 4h2",
+        graduation: "m2 9 10-5 10 5-10 5L2 9Zm4 3v5c3 2 7 2 10 0v-5m3-2v6",
+        message: "M21 11a8 8 0 0 1-8 8H7l-4 3v-7a8 8 0 1 1 18-4Z",
+        headset: "M4 14v-2a8 8 0 0 1 16 0v2m-16 0h3v5H4v-5Zm13 0h3v5h-3v-5Z",
+        globe: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm-7-9h14M12 3c2 2.5 3 5.5 3 9s-1 6.5-3 9c-2-2.5-3-5.5-3-9s1-6.5 3-9Z",
+        settings: "M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm0-12v3m0 11v3m8.5-8.5h-3m-11 0h-3m14.5-5-2 2m-8 8-2 2m0-14 2 2m8 8 2 2",
+        grid: "M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z"
+      });
+/* INCLUDE:MALL_MODULES */
+      const requiredIds = ["cover", "coverTitle", "enterDemo", "app", "demoTitle", "toggleOverview", "toggleNotes", "overviewPanel", "overviewNav", "prototypePanel", "prototypeContent", "notesPanel", "notesTitle", "notesDescription", "notesRules", "notesResult", "notesBoundary"];
+      if (!config || !Array.isArray(config.pages) || !config.pages.length) throw new Error("DEMO_CONFIG.pages 至少需要一个页面");
+      for (const id of requiredIds) if (!document.getElementById(id)) throw new Error(`Demo shell 缺少 #${id}`);
+
+      const pageById = new Map(config.pages.map((page) => [page.id, page]));
+      const navigation = { page: config.pages[0].id, states: new Map(config.pages.map(page => [page.id, "default"])) };
+      const createIcon = (name) => {
+        const path = Object.hasOwn(DEMO_ICONS, name) ? DEMO_ICONS[name] : null;
+        if (!path) throw new Error(`未知 Demo 图标：${name}`);
+        const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        icon.classList.add("demo-icon");
+        icon.setAttribute("viewBox", "0 0 24 24");
+        icon.setAttribute("aria-hidden", "true");
+        line.setAttribute("d", path);
+        icon.append(line);
+        return icon;
+      };
+      const hydrateIcons = (root = document) => {
+        const hosts = [...(root.matches?.("[data-demo-icon]") ? [root] : []), ...root.querySelectorAll("[data-demo-icon]")];
+        for (const host of hosts) {
+          const name = host.dataset.demoIcon;
+          if (!Object.hasOwn(DEMO_ICONS, name)) {
+            host.dataset.iconError = name;
+            continue; // One invalid icon must not prevent the rest of the page from starting.
+          }
+          delete host.dataset.iconError;
+          if (host.dataset.iconReady === name && host.querySelector("svg.demo-icon path")) continue;
+          host.replaceChildren(createIcon(name));
+          host.dataset.iconReady = name;
+        }
+      };
+      const addIconText = (button, iconName, text) => {
+        const label = document.createElement("span");
+        label.textContent = text;
+        button.append(createIcon(iconName), label);
+      };
+/* INCLUDE:MALL_RUNTIME */
+      if (pageById.size !== config.pages.length) throw new Error("DEMO_CONFIG.pages.id 不得重复");
+      for (const page of config.pages) {
+        const panel = $("[data-page-panel=\"" + CSS.escape(page.id) + "\"]");
+        if (!panel) throw new Error(`配置页面 ${page.id} 缺少对应 data-page-panel`);
+        const width = Number(page.viewport?.width);
+        const height = Number(page.viewport?.height);
+        if (width > 0) panel.style.width = `${width}px`;
+        if (height > 0) { panel.style.height = `${height}px`; panel.style.minHeight = `${height}px`; }
+        panel.dataset.state = "default";
+        panel.dataset.surface = page.surface;
+        if (page.surface === "mall-admin") renderMallAdminShell(page.id);
+      }
+
+      document.title = config.title || "需求原型";
+      $("#coverTitle").textContent = config.title || "需求原型";
+      $("#demoTitle").textContent = config.title || "需求原型";
+      $("#overviewSummary").textContent = config.overview || "";
+      for (const page of config.pages) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.pageTarget = page.id;
+        const label = document.createElement("strong");
+        const summary = document.createElement("small");
+        label.textContent = page.label || page.id;
+        summary.textContent = page.overview || "";
+        button.append(label, summary);
+        $("#overviewNav").appendChild(button);
+      }
+
+      const renderNotes = (pageId) => {
+        const page = pageById.get(pageId);
+        const panel = $("[data-page-panel=\"" + CSS.escape(pageId) + "\"]");
+        const state = page?.states?.find((item) => item.id === navigation.states.get(pageId));
+        const meta = { ...page?.notes, ...state?.notes };
+        $("#notesPanel").dataset.pageId = pageId;
+        $("#notesTitle").textContent = page.label || pageId;
+        $("#notesDescription").textContent = meta.description || "";
+        $("#notesResult").textContent = meta.result || "";
+        $("#notesBoundary").textContent = meta.boundary || "";
+        const root = $("#notesRules");
+        root.replaceChildren();
+        const groups = [...(page.notes?.groups || []), ...(state?.notes?.groups || [])];
+        const refs = [...new Set([...(page.notes?.specRefs || []), ...(state?.notes?.specRefs || [])])];
+        for (const ref of refs) {
+          const section = config.specSections?.[ref];
+          if (!section) throw new Error(`未知 Spec 章节：${ref}`);
+          groups.push({ title: `Spec · ${section.title}`, items: section.items });
+        }
+        for (const group of groups) {
+          const section = document.createElement("section");
+          const heading = document.createElement("h4");
+          const list = document.createElement("ul");
+          heading.textContent = group.title || "业务规则";
+          for (const item of group.items || []) {
+            const li = document.createElement("li");
+            li.textContent = item;
+            list.appendChild(li);
+          }
+          section.append(heading, list);
+          root.appendChild(section);
+        }
+      };
+
+      const showPage = (pageId) => {
+        if (!pageById.has(pageId)) throw new Error(`未知页面：${pageId}`);
+        navigation.page = pageId;
+        for (const panel of $$("[data-page-panel]")) panel.hidden = panel.dataset.pagePanel !== navigation.page;
+        for (const button of $$("[data-page-target]")) button.setAttribute("aria-current", button.dataset.pageTarget === pageId ? "page" : "false");
+        renderNotes(pageId);
+        $("#prototypeContent").scrollTo(0, 0);
+      };
+      const setSide = (side, visible) => {
+        const isOverview = side === "overview";
+        const button = $(isOverview ? "#toggleOverview" : "#toggleNotes");
+        $("#app").classList.toggle(isOverview ? "hide-overview" : "hide-notes", !visible);
+        button.setAttribute("aria-pressed", String(visible));
+        button.textContent = `${isOverview ? "概述" : "说明"}：${visible ? "显示" : "隐藏"}`;
+      };
+      const setPageState = (pageId, stateId) => {
+        const page = pageById.get(pageId);
+        if (!page?.states?.some((state) => state.id === stateId)) throw new Error(`未声明的页面状态：${pageId}/${stateId}`);
+        const panel = $("[data-page-panel=\"" + CSS.escape(pageId) + "\"]");
+        navigation.states.set(pageId, stateId);
+        panel.dataset.state = stateId;
+        if (navigation.page === pageId) renderNotes(pageId);
+      };
+      // Runtime checks complement source checks: CSS and dynamically-created DOM matter too.
+      const audit = () => {
+        const errors = [];
+        const panels = $$("[data-page-panel]");
+        for (const panel of panels) {
+          hydrateIcons(panel);
+          for (const host of $$("[data-demo-icon]", panel)) {
+            if (host.dataset.iconError || !host.querySelector("svg.demo-icon path")) errors.push(`${panel.dataset.pagePanel}: 图标缺失或未知 ${host.dataset.demoIcon}`);
+          }
+          for (const button of $$("button", panel)) {
+            if (!button.textContent.trim() && !button.getAttribute("aria-label")?.trim() && !button.getAttribute("aria-labelledby")) errors.push(`${panel.dataset.pagePanel}: 纯图标按钮缺少名称`);
+          }
+        }
+        for (const id of requiredIds) if (document.querySelectorAll(`[id="${id}"]`).length !== 1) errors.push(`外框 ID 重复或缺失: ${id}`);
+        if (panels.length !== config.pages.length) errors.push("页面数量与配置不同");
+        if (panels.filter((panel) => !panel.hidden).length !== 1) errors.push("必须只有一个可见产品页面");
+        for (const page of config.pages) {
+          const panel = panels.find((item) => item.dataset.pagePanel === page.id);
+          if (!panel || !panel.parentElement?.classList.contains("product-stage")) { errors.push(`${page.id}: 页面越出中栏`); continue; }
+          if (!page.states.some((state) => state.id === panel.dataset.state)) errors.push(`${page.id}: 未声明状态`);
+          if (panel.hidden || $("#app").hidden) continue;
+          const rect = panel.getBoundingClientRect();
+          if (Math.abs(rect.width - page.viewport.width) > 1 || Math.abs(rect.height - page.viewport.height) > 1) errors.push(`${page.id}: 产品画布尺寸改变`);
+          const style = getComputedStyle(panel);
+          if (!style.contain.includes("paint") || !style.contain.includes("layout")) errors.push(`${page.id}: 缺少页面隔离`);
+          if (page.surface === "mall-admin") {
+            const items = $$("[data-admin-primary] > button", panel);
+            if (items.map((item) => item.textContent).join("|") !== MALL_ADMIN_MODULES.map((item) => item.label).join("|")) errors.push(`${page.id}: 一级导航清单改变`);
+            for (const item of items) {
+              const css = getComputedStyle(item);
+              const icon = $("svg", item);
+              if (!icon || icon.getBoundingClientRect().width < 15 || css.display !== "flex" || css.flexDirection !== "row" || parseFloat(css.fontSize) < 12 || item.getBoundingClientRect().height < 36) errors.push(`${page.id}: 导航密度或图标异常`);
+            }
+          } else if ($("[data-admin-shell]", panel)) errors.push(`${page.id}: 错用商城外壳`);
+        }
+        const active = panels.find((panel) => !panel.hidden);
+        if (active) {
+          const selected = $$("#overviewNav [aria-current='page']");
+          if (active.dataset.pagePanel !== navigation.page || selected.length !== 1 || selected[0]?.dataset.pageTarget !== navigation.page || $("#notesPanel").dataset.pageId !== navigation.page) errors.push("三栏当前页面不一致");
+          if (active.dataset.state !== navigation.states.get(navigation.page)) errors.push("页面状态偏离统一状态源");
+          if ($("#notesTitle").textContent !== (pageById.get(navigation.page).label || navigation.page)) errors.push("右栏标题与当前页面不一致");
+          const page = pageById.get(active.dataset.pagePanel);
+          const state = page?.states.find((item) => item.id === active.dataset.state);
+          const notes = { ...page?.notes, ...state?.notes };
+          if ($("#notesResult").textContent !== (notes.result || "")) errors.push("右栏与当前状态不同步");
+        }
+        return { ok: errors.length === 0, errors };
+      };
+
+      $("#enterDemo").addEventListener("click", () => {
+        $("#cover").hidden = true;
+        $("#app").hidden = false;
+        $("#prototypePanel").focus({ preventScroll: true });
+      });
+      $("#overviewNav").addEventListener("click", (event) => {
+        const button = event.target.closest?.("[data-page-target]");
+        if (button) showPage(button.dataset.pageTarget);
+      });
+      $("#toggleOverview").addEventListener("click", () => setSide("overview", $("#toggleOverview").getAttribute("aria-pressed") !== "true"));
+      $("#toggleNotes").addEventListener("click", () => setSide("notes", $("#toggleNotes").getAttribute("aria-pressed") !== "true"));
+
+      hydrateIcons();
+      // Hydrate inserted/replaced icons and changed names, without observing shell content.
+      const iconObserver = new MutationObserver(() => {
+        for (const panel of $$("[data-page-panel]")) hydrateIcons(panel);
+      });
+      for (const panel of $$("[data-page-panel]")) iconObserver.observe(panel, {
+        childList: true, subtree: true, attributes: true, attributeFilter: ["data-demo-icon"]
+      });
+      showPage(config.pages[0].id);
+      window.productDemo = {
+        audit,
+        showPage,
+        setPageState,
+        setSide,
+        getPage: (pageId) => $("[data-page-panel=\"" + CSS.escape(pageId) + "\"]"),
+        createIcon,
+        hydrateIcons,
+        renderMallAdminShell,
+        getIconNames: () => Object.keys(DEMO_ICONS),
+        getMallAdminModules: () => MALL_ADMIN_MODULES.map((item) => ({ ...item })),
+        getConfig: () => config,
+        getState: () => ({ state: navigation.states.get(navigation.page), page: navigation.page, overview: $("#toggleOverview").getAttribute("aria-pressed") === "true", notes: $("#toggleNotes").getAttribute("aria-pressed") === "true" })
+      };
+    })();
+  </script>
+<!-- LOCKED:RUNTIME:END -->
+
+<!-- EDITABLE:PRODUCT_SCRIPT:START -->
+<!-- EDITABLE:PRODUCT_SCRIPT:END -->
+
+<!-- LOCKED:END:START -->
+</body>
+</html>
+<!-- LOCKED:END:END -->
