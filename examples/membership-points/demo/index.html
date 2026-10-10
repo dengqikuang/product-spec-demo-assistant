@@ -32,15 +32,77 @@
     #notesPanel { border-left: 1px solid var(--line); }
     .heading { position: sticky; z-index: 3; top: 0; margin: 0; padding: 13px 16px; border-bottom: 1px solid var(--line); background: rgb(255 255 255 / 96%); font-size: 14px; }
     .nav { display: grid; gap: 4px; padding: 10px; }
+    .nav-group { display: grid; gap: 4px; }
+    .nav-group + .nav-group { margin-top: 12px; }
+    .nav-group-title { margin: 0; padding: 7px 10px; border-bottom: 1px solid var(--line); color: #475569; font-size: 12px; font-weight: 700; }
     .nav button { padding: 9px 10px; border: 0; border-radius: 7px; color: #374151; background: transparent; text-align: left; }
     .nav button[aria-current="page"] { color: var(--accent); background: #eff6ff; font-weight: 650; }
     .prototype { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; overflow: hidden; isolation: isolate; background: var(--canvas); }
     .prototype-content { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+    .prototype-content, .prototype-content * { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+    .prototype-content:hover, .prototype-content:focus-visible,
+    .prototype-content *:hover, .prototype-content *:focus-visible { scrollbar-color: #94a3b8 transparent; }
+    .prototype-content::-webkit-scrollbar, .prototype-content *::-webkit-scrollbar { width: 6px; height: 6px; }
+    .prototype-content::-webkit-scrollbar-track, .prototype-content *::-webkit-scrollbar-track,
+    .prototype-content::-webkit-scrollbar-corner, .prototype-content *::-webkit-scrollbar-corner { background: transparent; }
+    .prototype-content::-webkit-scrollbar-thumb, .prototype-content *::-webkit-scrollbar-thumb { border-radius: 6px; background: transparent; }
+    .prototype-content:hover::-webkit-scrollbar-thumb, .prototype-content:focus-visible::-webkit-scrollbar-thumb,
+    .prototype-content *:hover::-webkit-scrollbar-thumb, .prototype-content *:focus-visible::-webkit-scrollbar-thumb { background: #94a3b8; }
+    @media (forced-colors: active) {
+      .prototype-content, .prototype-content * { scrollbar-color: auto; }
+    }
     .product-stage { display: grid; place-items: start center; width: max-content; min-width: 100%; min-height: 100%; padding: 20px; }
     [data-page-panel] { position: relative !important; contain: layout paint !important; isolation: isolate !important; flex-shrink: 0; margin: 0 !important; overflow: auto !important; }
     .overview-summary { margin: 0; padding: 14px 16px 4px; color: #4b5563; font-size: 13px; }
     .nav button strong, .nav button small { display: block; }
     .nav button small { margin-top: 5px; color: #6b7280; font-size: 12px; font-weight: 400; }
+    .business-flow-panel { width: max-content; min-width: 100%; min-height: 100%; padding: 30px; color: #202733; background: #f6f8fb; }
+    .business-flow-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; min-width: 820px; margin: 0 auto 20px; }
+    .business-flow-heading { max-width: 850px; }
+    .business-flow-eyebrow { margin: 0 0 7px; color: #405977; font-size: 13px; font-weight: 700; letter-spacing: .06em; }
+    .business-flow-header h3 { margin: 0 0 8px; color: #182536; font-size: 28px; line-height: 1.3; }
+    .business-flow-summary { max-width: 900px; margin: 0; color: #4b596b; font-size: 16px; line-height: 1.55; }
+    .business-flow-legend { display: flex; align-items: center; gap: 10px; min-width: 820px; margin: 0 auto 14px; padding: 12px 15px; border: 1px solid #d4dce6; border-radius: 10px; background: #fff; color: #445166; font-size: 13px; }
+    .flow-legend-title { margin-right: 4px; color: #566172; font-weight: 700; }
+    .flow-mode { display: inline-flex; align-items: center; min-width: 0; max-width: 100%; padding: 4px 7px; border: 1px solid; border-radius: 6px; font-size: 11px; line-height: 1.45; font-weight: 650; white-space: normal; overflow-wrap: anywhere; }
+    .flow-mode.online { border-color: #83afb8; color: #234f59; background: #edf7f8; }
+    .flow-mode.offline { border-color: #d3a36a; color: #70451c; background: #fff5e9; }
+    .business-flow-section { margin: 24px 0 0; }
+    .business-flow-section-title { margin: 0 0 12px; color: #243449; font-size: 18px; line-height: 1.5; }
+    .business-flow-board { width: max-content; margin: 0; overflow: hidden; border: 1px solid #e2e7ed; border-radius: 12px; background: #fff; box-shadow: 0 4px 16px rgb(38 56 78 / 4%); }
+    .business-flow-row { display: grid; grid-template-columns: 164px repeat(var(--flow-stages), 252px); border-bottom: 1px solid #dce3eb; }
+    .business-flow-row:last-child { border-bottom: 0; }
+    .business-flow-row-label { display: flex; flex-direction: column; justify-content: center; gap: 6px; min-height: 76px; padding: 14px; border-right: 1px solid #dce3eb; background: #f7f9fc; }
+    .business-flow-row-label strong { color: #344256; font-size: 14px; }
+    .business-flow-row-label small { color: #59677a; font-size: 12px; line-height: 1.45; }
+    .business-flow-cell { min-width: 0; padding: 14px; border-right: 1px solid #e2e7ee; overflow-wrap: anywhere; }
+    .business-flow-cell:last-child { border-right: 0; }
+    .business-flow-stage { position: relative; min-height: 92px; background: #f9fbfd; }
+    .business-flow-stage strong { display: block; color: #243449; font-size: 15px; line-height: 1.45; }
+    .business-flow-stage small { display: block; margin-top: 7px; color: #536277; font-size: 12px; line-height: 1.5; }
+    .flow-step { display: inline-grid; width: 19px; height: 19px; margin-right: 5px; place-items: center; border-radius: 50%; color: #526176; background: #e9edf3; font-size: 10px; font-weight: 700; vertical-align: -1px; }
+    .business-flow-action-list, .business-flow-record-list { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; gap: 7px; }
+    .business-flow-action-list { gap: 18px; }
+    .business-flow-action { min-width: 0; width: 100%; padding: 10px; border: 1px solid #b5c9e2; border-radius: 8px; background: #f0f5fc; }
+    .business-flow-action + .business-flow-action { position: relative; }
+    .business-flow-action + .business-flow-action::before { content: "↓"; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); color: #64748b; font-size: 13px; line-height: 16px; }
+    .business-flow-action-meta { display: flex; flex-wrap: wrap; min-width: 0; gap: 5px; margin-bottom: 7px; }
+    .flow-role { display: inline-flex; align-items: center; min-width: 0; max-width: 100%; padding: 4px 6px; border: 1px solid; border-radius: 5px; font-size: 11px; line-height: 1.45; font-weight: 650; white-space: normal; overflow-wrap: anywhere; }
+    .flow-role.tone-0 { border-color: #91acd8; color: #294875; background: #edf3ff; }
+    .flow-role.tone-1 { border-color: #b49ad8; color: #523873; background: #f4efff; }
+    .flow-role.tone-2 { border-color: #83b895; color: #285d3b; background: #edf8f0; }
+    .flow-role.tone-3 { border-color: #d1a56d; color: #694719; background: #fff6e9; }
+    .flow-role.tone-4 { border-color: #d79c8f; color: #713c32; background: #fff0ec; }
+    .business-flow-action-text { color: #263e5b; font-size: 13px; font-weight: 650; line-height: 1.5; }
+    .business-flow-condition { display: block; margin-top: 6px; color: #4f5e72; font-size: 12px; line-height: 1.45; }
+    .business-flow-record { padding: 10px; border: 1px solid #98c3a2; border-radius: 8px; color: #2c5838; background: #eef7f0; }
+    .business-flow-record strong { display: block; margin-bottom: 5px; color: #244e31; font-size: 13px; line-height: 1.4; }
+    .business-flow-record small { display: block; color: #3f6248; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+    .business-flow-empty { color: #59677a; font-size: 12px; }
+    .business-flow-foot { display: flex; justify-content: space-between; gap: 16px; min-width: 820px; margin: 12px auto 0; color: #4f5d70; font-size: 12px; line-height: 1.5; }
+    .business-flow-foot strong { color: #596574; }
+    .business-flow-placeholder { display: grid; min-width: 760px; min-height: 520px; place-content: center; gap: 8px; text-align: center; color: #6b7280; }
+    .business-flow-placeholder strong { color: #374151; font-size: 17px; }
     .demo-icon { display: inline-block; width: 1em; height: 1em; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; vertical-align: -0.125em; }
     .notes { display: grid; gap: 18px; padding: 14px 16px 28px; }
     .notes section { display: grid; gap: 6px; }
@@ -117,7 +179,8 @@
       </aside>
       <section id="prototypePanel" class="panel prototype" tabindex="-1">
         <h2 class="heading">原型</h2>
-        <div id="prototypeContent" class="prototype-content"><div class="product-stage">
+        <div id="prototypeContent" class="prototype-content" tabindex="0" aria-label="原型画布，可滚动查看"><div class="product-stage">
+          <section id="businessFlowPanel" class="business-flow-panel" aria-label="业务流程概览" hidden></section>
 <!-- LOCKED:BODY:END -->
 
 <!-- EDITABLE:PRODUCT_HTML:START -->
@@ -141,7 +204,7 @@
 <!-- LOCKED:NOTES:END -->
 
 <!-- EDITABLE:CONFIG:START -->
-<script>window.DEMO_CONFIG={title:"会员积分兑换 · 交互 Demo",overview:"让会员在移动端清楚选择权益、确认积分条件，并看到兑换成功或不足时的可恢复结果。",specSections:{"积分兑换页 · 权益与确认规则":{title:"7. 积分兑换页 · 权益与确认规则",items:["可用积分默认展示为 1,280；权益列表按所需积分升序展示。","每次仅可选择一项权益；未选择时兑换按钮禁用。","余额足够才扣减并展示兑换码；不足时不扣减积分，用户可改选其他权益。"]}},pages:[{id:"points-exchange",label:"积分兑换页",overview:"从积分中心选择权益并确认兑换；同时展示成功与积分不足两种关键结果。",surface:"mobile",terminal:"app",viewport:{width:390,height:844},p0:["P0-01","P0-02"],visual:{status:"none"},states:[{id:"default",label:"待选择"},{id:"selected",label:"已选择权益"},{id:"insufficient",label:"积分不足",notes:{result:"余额不变，不生成兑换码；用户可改选其他权益。"}},{id:"success",label:"兑换成功",notes:{result:"已扣减本地演示积分并展示兑换码。"}}],notes:{description:"会员在同一页面选择权益并完成兑换，不足时无需离开页面即可恢复选择。",groups:[{title:"权益与余额",items:["可用积分初始值为 1,280；权益按所需积分升序展示。","每次只能选一项权益；未选择时“确认兑换”禁用。"]},{title:"确认兑换",items:["所需积分不高于可用积分时，扣减积分并展示兑换码。","所需积分高于可用积分时，不扣减、不生成兑换码，并保留当前选择。"]}],specRefs:["积分兑换页 · 权益与确认规则"],result:"选择权益后可确认兑换。",boundary:"仅在当前浏览器内维护演示数据，不请求真实积分或发放服务。"}}]};</script>
+<script>window.DEMO_CONFIG = {"title":"会员积分兑换 · 交互 Demo","overview":"让会员在移动端清楚选择权益、确认积分条件，并看到兑换成功或不足时的可恢复结果。","specSections":{"积分兑换页 · 权益与确认规则":{"title":"7. 积分兑换页 · 权益与确认规则","items":["可用积分默认展示为 1,280；权益列表按所需积分升序展示。","每次仅可选择一项权益；未选择时兑换按钮禁用。","余额足够才扣减并展示兑换码；不足时不扣减积分，用户可改选其他权益。"]}},"pages":[{"id":"points-exchange","label":"积分兑换页","overview":"从积分中心选择权益并确认兑换；同时展示成功与积分不足两种关键结果。","surface":"mobile","terminal":"app","viewport":{"width":390,"height":844},"p0":["P0-01","P0-02"],"visual":{"status":"none"},"states":[{"id":"default","label":"待选择"},{"id":"selected","label":"已选择权益"},{"id":"insufficient","label":"积分不足","notes":{"result":"余额不变，不生成兑换码；用户可改选其他权益。"}},{"id":"success","label":"兑换成功","notes":{"result":"已扣减本地演示积分并展示兑换码。"}}],"notes":{"description":"会员在同一页面选择权益并完成兑换，不足时无需离开页面即可恢复选择。","groups":[{"title":"权益与余额","items":["可用积分初始值为 1,280；权益按所需积分升序展示。","每次只能选一项权益；未选择时“确认兑换”禁用。"]},{"title":"确认兑换","items":["所需积分不高于可用积分时，扣减积分并展示兑换码。","所需积分高于可用积分时，不扣减、不生成兑换码，并保留当前选择。"]}],"specRefs":["积分兑换页 · 权益与确认规则"],"result":"选择权益后可确认兑换。","boundary":"仅在当前浏览器内维护演示数据，不请求真实积分或发放服务。"}}],"businessFlow":{"title":"会员积分兑换","summary":"会员在积分中心浏览权益、选择一项并确认；系统按可用积分判断是否完成兑换。","outcome":"积分足够时扣减积分并展示兑换码；不足时不扣减、不生成兑换码，会员可改选。","boundary":"记录名称和示例值用于说明业务，不表示已确认物理表结构；兑换数据仅保存在当前浏览器演示中。","stages":[{"id":"enter","label":"进入积分中心","summary":"查看可用积分与可兑换权益","actions":[{"role":"会员","kind":"trigger","mode":"online","system":"APP · 积分中心","text":"进入兑换页并浏览权益"}],"records":[{"name":"会员积分账户（业务示意）","sampleData":"会员：当前演示会员 · 可用积分：1,280"}]},{"id":"choose","label":"选择权益","summary":"选择一项权益并查看所需积分","actions":[{"role":"会员","kind":"execute","mode":"online","system":"APP · 积分中心","text":"选择一项权益，查看兑换所需积分"}],"records":[]},{"id":"confirm","label":"确认兑换","summary":"系统按余额判断兑换结果","actions":[{"role":"会员","kind":"trigger","mode":"online","system":"APP · 积分中心","text":"确认兑换所选权益"},{"role":"积分系统","kind":"execute","mode":"online","system":"积分服务（示意）","text":"比较可用积分与所需积分","condition":"可用积分不少于所需积分时成功，否则提示不足"}],"records":[{"name":"兑换结果（业务示意）","sampleData":"精品咖啡兑换券：800 积分→兑换成功并生成兑换码；周末酒店立减券：1,600 积分→积分不足，余额不变"}]}]}};</script>
 <!-- EDITABLE:CONFIG:END -->
 
 <!-- LOCKED:RUNTIME:START -->
@@ -189,12 +252,14 @@
         grid: "M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z"
       });
       const MALL_ADMIN_MODULES = Object.freeze([{ label: "概况", icon: "home" }, { label: "门店", icon: "store" }, { label: "商品", icon: "tag" }, { label: "智能体", icon: "bot" }, { label: "店铺", icon: "store" }, { label: "内容", icon: "clipboard" }, { label: "绩效", icon: "chart" }, { label: "客户", icon: "user" }, { label: "订单", icon: "receipt" }, { label: "履约", icon: "truck" }, { label: "营销", icon: "gift" }, { label: "直播", icon: "video" }, { label: "数据", icon: "chart" }, { label: "批发", icon: "message" }, { label: "财务", icon: "wallet" }, { label: "企业", icon: "building" }, { label: "培训", icon: "graduation" }, { label: "视频号", icon: "video" }, { label: "SCRM", icon: "message" }, { label: "工厂测试", icon: "user" }, { label: "客服", icon: "headset" }, { label: "市场", icon: "globe" }, { label: "设置", icon: "settings" }, { label: "应用", icon: "grid" }]);
-      const requiredIds = ["cover", "coverTitle", "enterDemo", "app", "demoTitle", "toggleOverview", "toggleNotes", "overviewPanel", "overviewNav", "prototypePanel", "prototypeContent", "notesPanel", "notesTitle", "notesDescription", "notesRules", "notesResult", "notesBoundary"];
+      const requiredIds = ["cover", "coverTitle", "enterDemo", "app", "demoTitle", "toggleOverview", "toggleNotes", "overviewPanel", "overviewNav", "prototypePanel", "prototypeContent", "businessFlowPanel", "notesPanel", "notesTitle", "notesDescription", "notesRules", "notesResult", "notesBoundary"];
       if (!config || !Array.isArray(config.pages) || !config.pages.length) throw new Error("DEMO_CONFIG.pages 至少需要一个页面");
       for (const id of requiredIds) if (!document.getElementById(id)) throw new Error(`Demo shell 缺少 #${id}`);
 
       const pageById = new Map(config.pages.map((page) => [page.id, page]));
-      const navigation = { page: config.pages[0].id, states: new Map(config.pages.map(page => [page.id, "default"])) };
+      const businessFlowPageId = "__business_flow__";
+      const hasBusinessFlow = Boolean(config.businessFlow && (Array.isArray(config.businessFlow.flows) ? config.businessFlow.flows.some(flow => Array.isArray(flow.stages) && flow.stages.length) : Array.isArray(config.businessFlow.stages) && config.businessFlow.stages.length));
+      const navigation = { page: hasBusinessFlow ? businessFlowPageId : config.pages[0].id, states: new Map(config.pages.map(page => [page.id, "default"])) };
       const createIcon = (name) => {
         const path = Object.hasOwn(DEMO_ICONS, name) ? DEMO_ICONS[name] : null;
         if (!path) throw new Error(`未知 Demo 图标：${name}`);
@@ -325,7 +390,27 @@
       $("#coverTitle").textContent = config.title || "需求原型";
       $("#demoTitle").textContent = config.title || "需求原型";
       $("#overviewSummary").textContent = config.overview || "";
+      const createNavGroup = (title) => {
+        const group = document.createElement("section");
+        group.className = "nav-group";
+        group.setAttribute("aria-label", title);
+        const heading = document.createElement("h3");
+        heading.className = "nav-group-title";
+        heading.textContent = title;
+        group.appendChild(heading);
+        return group;
+      };
+      const pageGroupTitle = (page) => page.surface === "mobile"
+        ? ({ app: "APP", h5: "H5", "mini-program": "小程序" }[page.terminal] || "移动端")
+        : page.systemName || (page.surface === "mall-admin" ? "商城后台" : "后台");
+      const pageGroups = new Map();
       for (const page of config.pages) {
+        const groupTitle = pageGroupTitle(page);
+        if (!pageGroups.has(groupTitle)) {
+          const group = createNavGroup(groupTitle);
+          pageGroups.set(groupTitle, group);
+          $("#overviewNav").appendChild(group);
+        }
         const button = document.createElement("button");
         button.type = "button";
         button.dataset.pageTarget = page.id;
@@ -334,8 +419,125 @@
         label.textContent = page.label || page.id;
         summary.textContent = page.overview || "";
         button.append(label, summary);
-        $("#overviewNav").appendChild(button);
+        pageGroups.get(groupTitle).appendChild(button);
       }
+
+      let businessFlowButton = null;
+      if (hasBusinessFlow) {
+        businessFlowButton = document.createElement("button");
+        businessFlowButton.type = "button";
+        businessFlowButton.dataset.businessFlowTarget = "true";
+        const businessFlowLabel = document.createElement("strong");
+        const businessFlowSummary = document.createElement("small");
+        businessFlowLabel.textContent = "业务流程概览";
+        businessFlowSummary.textContent = config.businessFlow.title;
+        businessFlowButton.append(businessFlowLabel, businessFlowSummary);
+        const flowGroup = createNavGroup("方案概览");
+        flowGroup.appendChild(businessFlowButton);
+        $("#overviewNav").prepend(flowGroup);
+      }
+
+      const renderBusinessFlow = () => {
+        const root = $("#businessFlowPanel");
+        const flow = config.businessFlow;
+        root.replaceChildren();
+        const flows = Array.isArray(flow?.flows) ? flow.flows : flow?.stages?.length ? [flow] : [];
+        if (!flow || flow.status === "placeholder" || !flows.length) {
+          const empty = document.createElement("div");
+          empty.className = "business-flow-placeholder";
+          const title = document.createElement("strong");
+          const detail = document.createElement("span");
+          title.textContent = "业务流程概览待补充";
+          detail.textContent = "完成需求澄清后，按业务阶段、动作角色与系统留痕填入本图。";
+          empty.append(title, detail);
+          root.appendChild(empty);
+          return;
+        }
+        const el = (tag, className, text) => {
+          const node = document.createElement(tag);
+          if (className) node.className = className;
+          if (text !== undefined) node.textContent = text;
+          return node;
+        };
+        const header = el("header", "business-flow-header");
+        const heading = el("div", "business-flow-heading");
+        heading.append(el("p", "business-flow-eyebrow", "方案概览 · 端到端业务流程"));
+        heading.append(el("h3", "", flow.title));
+        heading.append(el("p", "business-flow-summary", flow.summary));
+        header.appendChild(heading);
+        root.appendChild(header);
+
+        const legend = el("div", "business-flow-legend");
+        legend.append(el("span", "flow-legend-title", "三层泳道"));
+        legend.append(el("span", "", "横向：业务流程"));
+        legend.append(el("span", "", "纵向：行为动作与系统留痕"));
+        legend.append(el("span", "flow-mode online", "线上 · 标明系统/终端"));
+        legend.append(el("span", "flow-mode offline", "线下 · 标明现场/外部环节"));
+        root.appendChild(legend);
+
+        const roleColors = new Map();
+        const roleClass = (role) => {
+          if (!roleColors.has(role)) roleColors.set(role, roleColors.size % 5);
+          return `tone-${roleColors.get(role)}`;
+        };
+        for (const [flowIndex, currentFlow] of flows.entries()) {
+        const section = el("section", "business-flow-section");
+        if (Array.isArray(flow.flows)) section.append(el("h4", "business-flow-section-title", `${flowIndex + 1}. ${currentFlow.title}`));
+        const board = el("div", "business-flow-board");
+        board.style.setProperty("--flow-stages", String(currentFlow.stages.length));
+        const makeRow = (title, hint) => {
+          const row = el("div", "business-flow-row");
+          const rowLabel = el("div", "business-flow-row-label");
+          rowLabel.append(el("strong", "", title), el("small", "", hint));
+          row.appendChild(rowLabel);
+          return row;
+        };
+        const processRow = makeRow("业务流程", "方案支持的完整链路 →");
+        const actionRow = makeRow("行为动作", "每项动作都标角色与发生位置");
+        const recordRow = makeRow("系统留痕", "业务记录与示意数据");
+        for (const [index, stage] of currentFlow.stages.entries()) {
+          const processCell = el("div", "business-flow-cell business-flow-stage");
+          processCell.append(el("strong", "", `${index + 1}. ${stage.label}`));
+          processCell.append(el("small", "", stage.summary));
+          processRow.appendChild(processCell);
+
+          const actionCell = el("div", "business-flow-cell");
+          const actionList = el("div", "business-flow-action-list");
+          for (const action of stage.actions || []) {
+            const card = el("div", "business-flow-action");
+            const meta = el("div", "business-flow-action-meta");
+            const kindLabel = action.kind === "trigger" ? "触发者" : "执行者";
+            meta.append(el("span", `flow-role ${roleClass(action.role)}`, `${kindLabel}：${action.role}`));
+            const place = action.mode === "online" ? `线上 · ${action.system}` : `线下 · ${action.location}`;
+            meta.append(el("span", `flow-mode ${action.mode}`, place));
+            card.append(meta, el("div", "business-flow-action-text", action.text));
+            if (action.condition) card.append(el("small", "business-flow-condition", `条件：${action.condition}`));
+            actionList.appendChild(card);
+          }
+          actionCell.appendChild(actionList);
+          actionRow.appendChild(actionCell);
+
+          const recordCell = el("div", "business-flow-cell");
+          const recordList = el("div", "business-flow-record-list");
+          if (stage.records?.length) {
+            for (const record of stage.records) {
+              const card = el("div", "business-flow-record");
+              card.append(el("strong", "", record.name), el("small", "", record.sampleData));
+              recordList.appendChild(card);
+            }
+          } else recordList.appendChild(el("span", "business-flow-empty", "本阶段无新增系统留痕"));
+          recordCell.appendChild(recordList);
+          recordRow.appendChild(recordCell);
+        }
+        board.append(processRow, actionRow, recordRow);
+        section.appendChild(board);
+        root.appendChild(section);
+        }
+        const foot = el("div", "business-flow-foot");
+        foot.append(el("span", "", "先从左到右读完整流程，再在每个阶段查看动作角色、线上/线下入口与记录。"));
+        root.appendChild(foot);
+      };
+      if (hasBusinessFlow) renderBusinessFlow();
 
       const renderNotes = (pageId) => {
         const page = pageById.get(pageId);
@@ -371,10 +573,51 @@
         }
       };
 
+      const renderBusinessFlowNotes = () => {
+        const flow = config.businessFlow || {};
+        $("#notesPanel").dataset.pageId = businessFlowPageId;
+        $("#notesTitle").textContent = "业务流程概览";
+        $("#notesDescription").textContent = flow.summary || "展示本需求所服务的端到端业务场景。";
+        $("#notesResult").textContent = flow.outcome || "业务流程及结果待补充。";
+        $("#notesBoundary").textContent = flow.boundary || "图中业务记录与示意数据不代表物理数据库实现。";
+        const root = $("#notesRules");
+        root.replaceChildren();
+        const section = document.createElement("section");
+        const heading = document.createElement("h4");
+        const list = document.createElement("ul");
+        heading.textContent = "图示说明";
+        const items = [
+          "横向按发生顺序呈现方案支持的完整业务流程。",
+          "行为动作逐项标明触发者或执行者；线上动作标注系统/终端，线下动作标注现场或外部环节。",
+          "系统留痕展示业务记录名称与示意数据；不要据此推断未确认的物理表结构。",
+          ...(flow.readingRules || [])
+        ];
+        for (const item of items) {
+          const li = document.createElement("li");
+          li.textContent = item;
+          list.appendChild(li);
+        }
+        section.append(heading, list);
+        root.appendChild(section);
+      };
+
+      const showBusinessFlow = () => {
+        if (!hasBusinessFlow) return;
+        navigation.page = businessFlowPageId;
+        $("#businessFlowPanel").hidden = false;
+        for (const panel of $$("[data-page-panel]")) panel.hidden = true;
+        for (const button of $$("#overviewNav [data-page-target]")) button.setAttribute("aria-current", "false");
+        businessFlowButton.setAttribute("aria-current", "page");
+        renderBusinessFlowNotes();
+        $("#prototypeContent").scrollTo(0, 0);
+      };
+
       const showPage = (pageId) => {
         if (!pageById.has(pageId)) throw new Error(`未知页面：${pageId}`);
         navigation.page = pageId;
+        $("#businessFlowPanel").hidden = true;
         for (const panel of $$("[data-page-panel]")) panel.hidden = panel.dataset.pagePanel !== navigation.page;
+        businessFlowButton?.setAttribute("aria-current", "false");
         for (const button of $$("[data-page-target]")) button.setAttribute("aria-current", button.dataset.pageTarget === pageId ? "page" : "false");
         renderNotes(pageId);
         $("#prototypeContent").scrollTo(0, 0);
@@ -398,6 +641,7 @@
       const audit = () => {
         const errors = [];
         const panels = $$("[data-page-panel]");
+        const flowPanel = $("#businessFlowPanel");
         for (const panel of panels) {
           hydrateIcons(panel);
           for (const host of $$("[data-demo-icon]", panel)) {
@@ -409,7 +653,14 @@
         }
         for (const id of requiredIds) if (document.querySelectorAll(`[id="${id}"]`).length !== 1) errors.push(`外框 ID 重复或缺失: ${id}`);
         if (panels.length !== config.pages.length) errors.push("页面数量与配置不同");
-        if (panels.filter((panel) => !panel.hidden).length !== 1) errors.push("必须只有一个可见产品页面");
+        const visiblePanels = panels.filter((panel) => !panel.hidden);
+        if (hasBusinessFlow && navigation.page === businessFlowPageId) {
+          if (visiblePanels.length || flowPanel.hidden) errors.push("业务流程概览必须独占中栏");
+          const selected = $$("#overviewNav [aria-current='page']");
+          if (selected.length !== 1 || selected[0] !== businessFlowButton || $("#notesPanel").dataset.pageId !== businessFlowPageId || $("#notesTitle").textContent !== "业务流程概览") errors.push("业务流程概览三栏导航或说明未同步");
+        } else {
+          if (visiblePanels.length !== 1 || !flowPanel.hidden) errors.push("必须只有一个可见产品页面或业务流程概览");
+        }
         for (const page of config.pages) {
           const panel = panels.find((item) => item.dataset.pagePanel === page.id);
           if (!panel || !panel.parentElement?.classList.contains("product-stage")) { errors.push(`${page.id}: 页面越出中栏`); continue; }
@@ -449,6 +700,7 @@
         $("#prototypePanel").focus({ preventScroll: true });
       });
       $("#overviewNav").addEventListener("click", (event) => {
+        if (hasBusinessFlow && event.target.closest?.("[data-business-flow-target]")) { showBusinessFlow(); return; }
         const button = event.target.closest?.("[data-page-target]");
         if (button) showPage(button.dataset.pageTarget);
       });
@@ -463,7 +715,8 @@
       for (const panel of $$("[data-page-panel]")) iconObserver.observe(panel, {
         childList: true, subtree: true, attributes: true, attributeFilter: ["data-demo-icon"]
       });
-      showPage(config.pages[0].id);
+      if (hasBusinessFlow) showBusinessFlow();
+      else showPage(config.pages[0].id);
       window.productDemo = {
         audit,
         showPage,
@@ -472,11 +725,11 @@
         getPage: (pageId) => $("[data-page-panel=\"" + CSS.escape(pageId) + "\"]"),
         createIcon,
         hydrateIcons,
-        renderMallAdminShell,
+        renderMallAdminShell: typeof renderMallAdminShell === "function" ? renderMallAdminShell : () => { throw new Error("商城外壳需经脚手架组装后使用"); },
         getIconNames: () => Object.keys(DEMO_ICONS),
         getMallAdminModules: () => MALL_ADMIN_MODULES.map((item) => ({ ...item })),
         getConfig: () => config,
-        getState: () => ({ state: navigation.states.get(navigation.page), page: navigation.page, overview: $("#toggleOverview").getAttribute("aria-pressed") === "true", notes: $("#toggleNotes").getAttribute("aria-pressed") === "true" })
+        getState: () => ({ state: navigation.states.get(navigation.page) || null, page: navigation.page, overview: $("#toggleOverview").getAttribute("aria-pressed") === "true", notes: $("#toggleNotes").getAttribute("aria-pressed") === "true" })
       };
     })();
   </script>

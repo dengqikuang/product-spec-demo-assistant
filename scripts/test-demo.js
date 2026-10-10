@@ -8,6 +8,7 @@ const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
 const skill = path.resolve(__dirname, '..');
 const template = require('./shell-library').compose();
+const rawTemplate = fs.readFileSync(path.join(skill, 'assets/demo-template/index.html'), 'utf8');
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'product-demo-regression-'));
 const output = path.join(root, 'demo/index.html');
 fs.mkdirSync(path.dirname(output));
@@ -25,7 +26,7 @@ admin.states = [
 admin.notes = { description: '验证已有商城壳内的配置操作。', groups: [{ title: '配置规则', items: ['确认才回写，取消不提交。'] }], result: '尚未保存。', boundary: '框架回归用例，不是业务交付。' };
 const mobile = { id: 'mobile', label: '移动端 · 商品选择', overview: '滚动列表并选择商品，底部提交始终可达。', surface: 'mobile', viewport: { width: 390, height: 844 }, p0: ['P0-02'], visual: { status: 'none' }, states: [{ id: 'default', label: '未选择' }, { id: 'selected', label: '已选择', notes: { result: '已选商品已显示在底栏。' } }], notes: { description: '验证独立移动页面的滚动、底栏和状态。', result: '请选择商品。', boundary: '内存演示，不创建订单。', groups: [] } };
 const custom = { id: 'custom', label: '其他后台 · 审核', overview: '其他系统保持自己的导航与密度。', surface: 'custom-admin', viewport: { width: 1200, height: 800 }, p0: ['P0-03'], visual: { status: 'none' }, states: [{ id: 'default', label: '待审核' }, { id: 'approved', label: '已审核', notes: { result: '审核结果已更新。' } }], notes: { description: '验证其他后台不带入商城导航。', result: '待审核。', boundary: '仅演示本地状态。', groups: [] } };
-const config = { title: '三栏需求讲解 · 框架回归', overview: '验证商城配置、移动选择与其他后台在同一讲解框架内独立运行。', pages: [admin, mobile, custom] };
+const config = { title: '三栏需求讲解 · 框架回归', overview: '验证商城配置、移动选择与其他后台在同一讲解框架内独立运行。', businessFlow: { title: '商品配置与确认', summary: '运营配置商品，会员在移动端完成选择，审核系统记录结果。', outcome: '配置保存后可供用户选择，审核状态可追踪。', boundary: '框架回归样例，不代表生产数据结构。', stages: [ { id: 'configure', label: '配置商品', summary: '运营建立可选商品', actions: [{ role: '运营人员', kind: 'execute', mode: 'online', system: '商城后台', text: '编辑并保存商品配置' }], records: [{ name: '商品配置记录（业务示意）', sampleData: '商品：普通商品 · 状态：已保存' }] }, { id: 'select', label: '选择并处理', summary: '用户选择商品并完成审核', actions: [{ role: '会员', kind: 'trigger', mode: 'online', system: 'APP', text: '选择商品并提交' }, { role: '审核系统', kind: 'execute', mode: 'online', system: '审核后台', text: '更新审核结果' }], records: [] } ] }, pages: [admin, mobile, custom] };
 mobile.terminal = 'app';
 const html = `<section data-page-panel="admin" data-p0="P0-01"><section data-admin-content><div class="config-page"><h2>关联商品配置</h2><p>当前配置：<strong data-value>普通商品</strong></p><button data-open>关联商品</button><button data-save>保存</button><p data-saved>尚未保存</p><div class="dialog-mask" data-modal hidden><section class="picker" role="dialog" aria-label="关联商品"><h3>关联商品</h3><label><input type="checkbox" data-bundle>组合商品</label><footer><button data-cancel>取消</button><button data-confirm>确认</button></footer></section></div></div></section></section>
 <section data-page-panel="mobile" data-p0="P0-02"><div class="phone"><header><h2>选择商品</h2></header><div class="goods-scroll">${Array.from({ length: 18 }, (_, i) => `<button class="good" data-good="商品 ${i + 1}"><span data-demo-icon="gift"></span><span>商品 ${i + 1}</span></button>`).join('')}</div><footer class="phone-footer"><span data-selection>未选择</span><button data-submit>确认选择</button><span data-submitted></span></footer></div></section>
@@ -75,6 +76,16 @@ const check = (name, candidate, expected) => {
 };
 const changeConfig = (edit) => { const copy = structuredClone(config); edit(copy); return configure(copy); };
 check('mixed pages accepted', fixture, true);
+check('simple demo without business flow accepted', changeConfig(c => delete c.businessFlow), true);
+check('multiple business flows accepted', changeConfig(c => { const stages = c.businessFlow.stages; delete c.businessFlow.stages; c.businessFlow.flows = [{ id: 'primary', title: '主流程', stages }, { id: 'secondary', title: '另一业务流程', stages: stages.slice().reverse() }]; }), true);
+check('ambiguous flow formats rejected', changeConfig(c => { c.businessFlow.flows = [{ id: 'primary', title: '主流程', stages: c.businessFlow.stages }]; }), false);
+check('empty multiple flows rejected', changeConfig(c => { delete c.businessFlow.stages; c.businessFlow.flows = []; }), false);
+check('invalid second flow rejected', changeConfig(c => { const stages = c.businessFlow.stages; delete c.businessFlow.stages; c.businessFlow.flows = [{ id: 'primary', title: '主流程', stages }, { id: 'secondary', title: '另一业务流程', stages: [] }]; }), false);
+check('partial business flow rejected', changeConfig(c => c.businessFlow.stages[0].actions[0].role = ''), false);
+check('missing action role rejected', changeConfig(c => delete c.businessFlow.stages[0].actions[0].role), false);
+check('online endpoint required', changeConfig(c => delete c.businessFlow.stages[0].actions[0].system), false);
+check('offline location required', changeConfig(c => { c.businessFlow.stages[0].actions[0].mode = 'offline'; }), false);
+check('system trace sample required', changeConfig(c => delete c.businessFlow.stages[0].records[0].sampleData), false);
 check('unfinished template rejected', template, false);
 check('outer frame edit rejected', fixture.replace('概述：显示', '导航'), false);
 check('locked navigation CSS edit rejected', fixture.replace('font-size: 12px; text-align: left', 'font-size: 8px; text-align: left'), false);
@@ -133,6 +144,16 @@ check('final valid fixture', fixture, true);
 for (const match of fixture.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)) new vm.Script(match[1]);
 console.log(`PASS ${count} contract cases; all inline scripts parse.`);
 console.log(`BROWSER_FIXTURE=${output}`);
+const multiConfig = structuredClone(config);
+const multiStages = multiConfig.businessFlow.stages;
+delete multiConfig.businessFlow.stages;
+multiConfig.businessFlow.flows = [
+  { id: 'primary', title: '商品配置与确认', stages: multiStages },
+  { id: 'secondary', title: '配置复核流程', stages: [...multiStages, { ...structuredClone(multiStages[0]), id: 'review', label: '复核配置' }] }
+];
+const multiOutput = path.join(root, 'demo/multiple-flows.html');
+fs.writeFileSync(multiOutput, configure(multiConfig));
+console.log(`MULTI_FLOW_FIXTURE=${multiOutput}`);
 
 // Exercise icon hydration independently of business code, including replaced markup.
 class IconNode {
@@ -173,7 +194,8 @@ const navContext = {
   navigation: { page: 'list', states: new Map([['list', 'default'], ['form', 'default']]) },
   CSS: { escape: value => value },
   $$: selector => selector === '[data-page-panel]' ? pageNodes : navNodes,
-  $: selector => selector === '#prototypeContent' ? { scrollTo() {} } : pageNodes.find(node => selector.includes('"' + node.dataset.pagePanel + '"')),
+  businessFlowButton: { setAttribute(key, value) { this[key] = value; } },
+  $: selector => selector === '#prototypeContent' ? { scrollTo() {} } : selector === '#businessFlowPanel' ? { hidden: true } : pageNodes.find(node => selector.includes('"' + node.dataset.pagePanel + '"')),
   renderNotes: id => { navContext.notesPage = id; }
 };
 const navigationCode = template.slice(template.indexOf('      const showPage ='), template.indexOf('      const setSide =')) +
@@ -192,6 +214,16 @@ assert.equal(navContext.notesPage, 'form');
 assert.throws(() => navContext.show('missing'));
 assert.equal(navContext.navigation.page, 'form');
 console.log('PASS navigation: common entry, three-column sync, retained draft/state, invalid target');
+
+const routingCode = rawTemplate.slice(rawTemplate.indexOf('      const pageById ='), rawTemplate.indexOf('      const createIcon ='));
+for (const [flowConfig, expectedPage, expectedFlow] of [[{}, 'list', false], [{ businessFlow: { stages: [{ id: 'a' }] } }, '__business_flow__', true]]) {
+  const routingContext = { config: { ...flowConfig, pages: [{ id: 'list' }, { id: 'form' }] } };
+  vm.runInNewContext(routingCode + ';this.initialPage = navigation.page; this.flowEnabled = hasBusinessFlow;', routingContext);
+  assert.equal(routingContext.initialPage, expectedPage);
+  assert.equal(routingContext.flowEnabled, expectedFlow);
+}
+assert.match(rawTemplate, /if \(hasBusinessFlow\) showBusinessFlow\(\);\s*else showPage\(config\.pages\[0\]\.id\);/);
+console.log('PASS optional flow routing: applicable demos start at overview; simple demos start at first product page');
 
 // Render actual notes code: retain base rules, append state detail and embed Spec text.
 class NoteNode {

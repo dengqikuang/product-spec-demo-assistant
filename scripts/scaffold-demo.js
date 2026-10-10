@@ -25,7 +25,7 @@ if (shellAsset && !checkShell) { console.error("--shell-asset is read-only and r
 if (specFile && !checkShell) { console.error("--spec requires --check-shell"); process.exit(2); }
 const lockedPattern = /<!-- LOCKED:([A-Z_]+):START -->([\s\S]*?)<!-- LOCKED:\1:END -->/g;
 const editableNames = ["PRODUCT_STYLE", "PRODUCT_HTML", "CONFIG", "PRODUCT_SCRIPT"];
-const requiredIds = ["cover", "enterDemo", "app", "toggleOverview", "toggleNotes", "overviewPanel", "overviewNav", "prototypePanel", "prototypeContent", "notesPanel"];
+const requiredIds = ["cover", "enterDemo", "app", "toggleOverview", "toggleNotes", "overviewPanel", "overviewNav", "prototypePanel", "prototypeContent", "businessFlowPanel", "notesPanel"];
 // Read the single canonical module list from the template; do not maintain a second copy.
 const templateText = compose();
 const iconExpression = templateText.match(/const DEMO_ICONS = Object\.freeze\((\{[\s\S]*?\})\);/)?.[1];
@@ -122,6 +122,53 @@ const validateVisualConfig = (page) => {
       if (!visualCase?.id || !stateIds.includes(visualCase.state)) errors.push(`${page.id}.visual.cases must reference declared states`);
     }
   }
+  return errors;
+};
+const validateBusinessFlow = (flow) => {
+  const errors = [];
+  if (flow === undefined || flow === null) return errors;
+  if (!flow || typeof flow !== "object" || Array.isArray(flow) || flow.status === "placeholder") return ["CONFIG.businessFlow must contain a confirmed end-to-end business flow"];
+  for (const key of ["title", "summary", "outcome"]) if (typeof flow[key] !== "string" || !flow[key].trim()) errors.push(`businessFlow.${key} is required`);
+  if (flow.flows !== undefined) {
+    if (flow.stages !== undefined) errors.push("businessFlow must use either flows or stages, not both");
+    if (!Array.isArray(flow.flows) || !flow.flows.length) return [...errors, "businessFlow.flows must be a non-empty array"];
+    const flowIds = new Set();
+    for (const [index, item] of flow.flows.entries()) {
+      const prefix = `businessFlow.flows[${index}]`;
+      if (!item || typeof item !== "object" || Array.isArray(item)) { errors.push(`${prefix} must be an object`); continue; }
+      if (typeof item.id !== "string" || !item.id.trim() || flowIds.has(item.id)) errors.push(`${prefix}.id must be unique and non-empty`);
+      flowIds.add(item.id);
+      if (item.flows !== undefined) errors.push(`${prefix} cannot contain nested flows`);
+      errors.push(...validateBusinessFlow({ title: item.title, summary: flow.summary, outcome: flow.outcome, stages: item.stages }).map(error => error.replace(/businessFlow/g, prefix)));
+    }
+    if (flow.readingRules !== undefined && (!Array.isArray(flow.readingRules) || flow.readingRules.some(rule => typeof rule !== "string" || !rule.trim()))) errors.push("businessFlow.readingRules must contain non-empty strings");
+    return errors;
+  }
+  if (!Array.isArray(flow.stages) || flow.stages.length < 2) return [...errors, "businessFlow.stages needs at least two ordered business stages"];
+  const ids = new Set();
+  for (const [index, stage] of flow.stages.entries()) {
+    const prefix = `businessFlow.stages[${index}]`;
+    if (!stage || typeof stage !== "object") { errors.push(`${prefix} must be an object`); continue; }
+    if (typeof stage.id !== "string" || !stage.id.trim() || ids.has(stage.id)) errors.push(`${prefix}.id must be unique and non-empty`);
+    ids.add(stage.id);
+    for (const key of ["label", "summary"]) if (typeof stage[key] !== "string" || !stage[key].trim()) errors.push(`${prefix}.${key} is required`);
+    if (!Array.isArray(stage.actions) || !stage.actions.length) errors.push(`${prefix}.actions needs at least one role-linked action`);
+    for (const [actionIndex, action] of (stage.actions || []).entries()) {
+      const actionPrefix = `${prefix}.actions[${actionIndex}]`;
+      if (!action || typeof action !== "object") { errors.push(`${actionPrefix} must be an object`); continue; }
+      for (const key of ["role", "text"]) if (typeof action[key] !== "string" || !action[key].trim()) errors.push(`${actionPrefix}.${key} is required`);
+      if (!["trigger", "execute"].includes(action.kind)) errors.push(`${actionPrefix}.kind must be trigger or execute`);
+      if (!["online", "offline"].includes(action.mode)) errors.push(`${actionPrefix}.mode must be online or offline`);
+      const locationKey = action.mode === "online" ? "system" : action.mode === "offline" ? "location" : null;
+      if (locationKey && (typeof action[locationKey] !== "string" || !action[locationKey].trim())) errors.push(`${actionPrefix}.${locationKey} is required for ${action.mode} actions`);
+    }
+    if (!Array.isArray(stage.records)) errors.push(`${prefix}.records must be an array (use [] when no system trace is confirmed)`);
+    for (const [recordIndex, record] of (stage.records || []).entries()) {
+      const recordPrefix = `${prefix}.records[${recordIndex}]`;
+      for (const key of ["name", "sampleData"]) if (typeof record?.[key] !== "string" || !record[key].trim()) errors.push(`${recordPrefix}.${key} is required`);
+    }
+  }
+  if (flow.readingRules !== undefined && (!Array.isArray(flow.readingRules) || flow.readingRules.some(rule => typeof rule !== "string" || !rule.trim()))) errors.push("businessFlow.readingRules must contain non-empty strings");
   return errors;
 };
 const validateAdminShell = (page, html) => {
@@ -278,6 +325,7 @@ if (checkShell) {
     const ids = config.pages.map((page) => page?.id);
     if (ids.some((id) => typeof id !== "string" || !/^[A-Za-z][A-Za-z0-9_-]*$/.test(id)) || new Set(ids).size !== ids.length) throw new Error("page IDs must be unique valid identifiers");
     if (typeof config.overview !== "string" || !config.overview.trim()) errors.push("CONFIG.overview must explain the overall requirement");
+    if (!shellAsset) errors.push(...validateBusinessFlow(config.businessFlow));
     if (panels.size !== config.pages.length) errors.push("CONFIG pages and PRODUCT_HTML panels differ");
     if (!shellAsset && !config.pages.some((page) => Array.isArray(page.p0) && page.p0.length)) errors.push("Demo must map at least one confirmed P0 requirement");
     errors.push(...validateDeclaredStateCalls(config, rawProductScript));
@@ -315,7 +363,7 @@ if (checkShell) {
       const blocks = productHtml.split(/(?=<[a-z][\w-]*\b[^>]*\bdata-page-panel=)/i);
       const pageHtml = blocks.find((block) => block.match(/\bdata-page-panel=["']([^"']+)["']/)?.[1] === page.id) || "";
       errors.push(...validateAdminShell(page, pageHtml));
-      errors.push(...validateTerminal(page, pageHtml, productStyle));
+      errors.push(...validateTerminal(page, pageHtml, shellAsset ? "" : productStyle));
       if (page.surface !== "mall-admin" && /\bdata-admin-(?:shell|content)\b/.test(pageHtml)) errors.push(`${page.id} must not contain mall admin nodes`);
     }
   } catch (error) {
