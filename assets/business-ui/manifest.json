@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "profiles": {
+    "mall-admin": { "terminal": "pc-web", "surface": "mall-admin", "label": "商城后台" },
+    "supplier-admin": { "terminal": "pc-web", "surface": "custom-admin", "label": "供应商后台" },
+    "middle-platform": { "terminal": "pc-web", "surface": "custom-admin", "label": "中台后台" },
+    "desktop-default": { "terminal": "pc-web", "surface": "custom-admin", "label": "通用 PC 后台" },
+    "app": { "terminal": "app", "surface": "mobile", "label": "APP" },
+    "h5": { "terminal": "h5", "surface": "mobile", "label": "移动 H5" },
+    "mini-program": { "terminal": "mini-program", "surface": "mobile", "label": "微信小程序" }
+  },
+  "layouts": ["list", "form", "detail", "dashboard", "mixed"],
+  "recipes": {
+    "pc-filter-bar": { "terminals": ["pc-web"], "layouts": ["list", "mixed"] },
+    "pc-data-table": { "terminals": ["pc-web"], "layouts": ["list", "mixed"] },
+    "pc-aligned-form": { "terminals": ["pc-web"], "layouts": ["form", "mixed"] },
+    "pc-context-drawer": { "terminals": ["pc-web"], "layouts": ["list", "detail", "mixed"], "review": "Keep the underlying list usable; label the region and restore focus to its trigger on close." },
+    "pc-confirm-dialog": { "terminals": ["pc-web"], "layouts": ["list", "form", "detail", "mixed"], "review": "Use only for a short, consequential decision; provide explicit cancel and confirm actions." },
+    "mobile-record-list": { "terminals": ["app", "h5", "mini-program"], "layouts": ["list", "mixed"] },
+    "mobile-filter-sheet": { "terminals": ["app", "h5", "mini-program"], "layouts": ["list", "mixed"] },
+    "mobile-field-stack": { "terminals": ["app", "h5", "mini-program"], "layouts": ["form", "mixed"] },
+    "mobile-select-list": { "terminals": ["app", "h5", "mini-program"], "layouts": ["form", "mixed"] },
+    "mobile-comparison-table": { "terminals": ["app", "h5", "mini-program"], "layouts": ["list", "mixed"], "review": "Check horizontal scrolling and access to every compared value and action." },
+    "mobile-bottom-action": { "terminals": ["app", "h5", "mini-program"], "layouts": ["list", "form", "detail", "mixed"] }
+  }
+}

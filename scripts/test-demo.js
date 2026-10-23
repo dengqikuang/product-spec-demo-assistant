@@ -9,6 +9,9 @@ const { spawnSync } = require('node:child_process');
 const skill = path.resolve(__dirname, '..');
 const template = require('./shell-library').compose();
 const rawTemplate = fs.readFileSync(path.join(skill, 'assets/demo-template/index.html'), 'utf8');
+assert.match(rawTemplate, /<div id="app" class="app hide-notes" hidden>/, 'new demos must start with the right notes panel hidden');
+assert.match(rawTemplate, /id="toggleNotes"[^>]*aria-pressed="false">说明：隐藏/, 'the notes toggle must expose the hidden state accessibly');
+console.log('PASS notes panel hidden by default with matching accessible toggle state');
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'product-demo-regression-'));
 const output = path.join(root, 'demo/index.html');
 fs.mkdirSync(path.dirname(output));
@@ -16,7 +19,7 @@ const slot = (html, name, value) => html.replace(new RegExp(`(<!-- EDITABLE:${na
 const base = {};
 vm.runInNewContext(template.match(/window.DEMO_CONFIG = ([\s\S]*?);\s*<\/script>/)[0].replace(/<\/script>$/, ''), { window: base });
 const admin = structuredClone(base.DEMO_CONFIG.pages[0]);
-admin.id = 'admin'; admin.label = '后台 · 商品配置'; admin.overview = '配置组合商品并保存，验证选择、取消与回写。'; admin.p0 = ['P0-01'];
+admin.id = 'admin'; admin.label = '后台 · 商品配置'; admin.overview = '配置组合商品并保存，验证选择、取消与回写。'; admin.p0 = ['P0-01']; admin.ui = { profile: 'mall-admin', layout: 'form' };
 admin.visual = { status: 'none' };
 admin.states = [
   { id: 'default', label: '配置页' },
@@ -24,8 +27,8 @@ admin.states = [
   { id: 'saved', label: '已保存', notes: { result: '所选配置已保存到本次演示内存。' } }
 ];
 admin.notes = { description: '验证已有商城壳内的配置操作。', groups: [{ title: '配置规则', items: ['确认才回写，取消不提交。'] }], result: '尚未保存。', boundary: '框架回归用例，不是业务交付。' };
-const mobile = { id: 'mobile', label: '移动端 · 商品选择', overview: '滚动列表并选择商品，底部提交始终可达。', surface: 'mobile', viewport: { width: 390, height: 844 }, p0: ['P0-02'], visual: { status: 'none' }, states: [{ id: 'default', label: '未选择' }, { id: 'selected', label: '已选择', notes: { result: '已选商品已显示在底栏。' } }], notes: { description: '验证独立移动页面的滚动、底栏和状态。', result: '请选择商品。', boundary: '内存演示，不创建订单。', groups: [] } };
-const custom = { id: 'custom', label: '其他后台 · 审核', overview: '其他系统保持自己的导航与密度。', surface: 'custom-admin', viewport: { width: 1200, height: 800 }, p0: ['P0-03'], visual: { status: 'none' }, states: [{ id: 'default', label: '待审核' }, { id: 'approved', label: '已审核', notes: { result: '审核结果已更新。' } }], notes: { description: '验证其他后台不带入商城导航。', result: '待审核。', boundary: '仅演示本地状态。', groups: [] } };
+const mobile = { id: 'mobile', label: '移动端 · 商品选择', overview: '滚动列表并选择商品，底部提交始终可达。', surface: 'mobile', terminal: 'app', ui: { profile: 'app', layout: 'list' }, viewport: { width: 390, height: 844 }, p0: ['P0-02'], visual: { status: 'none' }, states: [{ id: 'default', label: '未选择' }, { id: 'selected', label: '已选择', notes: { result: '已选商品已显示在底栏。' } }], notes: { description: '验证独立移动页面的滚动、底栏和状态。', result: '请选择商品。', boundary: '内存演示，不创建订单。', groups: [] } };
+const custom = { id: 'custom', label: '其他后台 · 审核', overview: '其他系统保持自己的导航与密度。', surface: 'custom-admin', ui: { profile: 'desktop-default', layout: 'detail' }, viewport: { width: 1200, height: 800 }, p0: ['P0-03'], visual: { status: 'none' }, states: [{ id: 'default', label: '待审核' }, { id: 'approved', label: '已审核', notes: { result: '审核结果已更新。' } }], notes: { description: '验证其他后台不带入商城导航。', result: '待审核。', boundary: '仅演示本地状态。', groups: [] } };
 const config = { title: '三栏需求讲解 · 框架回归', overview: '验证商城配置、移动选择与其他后台在同一讲解框架内独立运行。', businessFlow: { title: '商品配置与确认', summary: '运营配置商品，会员在移动端完成选择，审核系统记录结果。', outcome: '配置保存后可供用户选择，审核状态可追踪。', boundary: '框架回归样例，不代表生产数据结构。', stages: [ { id: 'configure', label: '配置商品', summary: '运营建立可选商品', actions: [{ role: '运营人员', kind: 'execute', mode: 'online', system: '商城后台', text: '编辑并保存商品配置' }], records: [{ name: '商品配置记录（业务示意）', sampleData: '商品：普通商品 · 状态：已保存' }] }, { id: 'select', label: '选择并处理', summary: '用户选择商品并完成审核', actions: [{ role: '会员', kind: 'trigger', mode: 'online', system: 'APP', text: '选择商品并提交' }, { role: '审核系统', kind: 'execute', mode: 'online', system: '审核后台', text: '更新审核结果' }], records: [] } ] }, pages: [admin, mobile, custom] };
 mobile.terminal = 'app';
 const html = `<section data-page-panel="admin" data-p0="P0-01"><section data-admin-content><div class="config-page"><h2>关联商品配置</h2><p>当前配置：<strong data-value>普通商品</strong></p><button data-open>关联商品</button><button data-save>保存</button><p data-saved>尚未保存</p><div class="dialog-mask" data-modal hidden><section class="picker" role="dialog" aria-label="关联商品"><h3>关联商品</h3><label><input type="checkbox" data-bundle>组合商品</label><footer><button data-cancel>取消</button><button data-confirm>确认</button></footer></section></div></div></section></section>
@@ -109,8 +112,17 @@ check('per-page mall content checked', changeConfig(c => { c.pages[2].surface = 
 check('wrong mobile shell rejected', fixture.replace('<div class="phone">', '<div class="phone" data-admin-content>'), false);
 check('mobile viewport surface required', changeConfig(c => c.pages[1].surface = 'custom-admin'), false);
 check('mobile terminal required', changeConfig(c => delete c.pages[1].terminal), false);
+check('UI profile required', changeConfig(c => delete c.pages[1].ui), false);
+check('explicit UI profile required', changeConfig(c => delete c.pages[1].ui.profile), false);
+check('explicit UI layout required', changeConfig(c => delete c.pages[1].ui.layout), false);
+check('wrong terminal profile rejected', changeConfig(c => c.pages[1].ui.profile = 'middle-platform'), false);
+check('wrong layout rejected', changeConfig(c => c.pages[1].ui.layout = 'unknown'), false);
 check('mini-program chrome rejected in APP', fixture.replace('<div class="phone">', '<div class="phone"><div class="mini-capsule"></div>'), false);
+check('orphan mini status bar rejected in APP', fixture.replace('<div class="phone">', '<div class="phone"><div class="mini-status-bar"></div>'), false);
 check('mini-program chrome required', changeConfig(c => c.pages[1].terminal = 'mini-program'), false);
+check('mobile recipe rejected on desktop', fixture.replace('<div class="config-page">', '<div class="config-page" data-ui-recipe="mobile-filter-sheet">'), false);
+check('PC drawer recipe rejected on mobile', fixture.replace('<div class="config-page">', '<div class="config-page" data-ui-recipe="pc-context-drawer">'), false);
+check('mobile comparison table recipe accepted', fixture.replace('<div class="goods-scroll">', '<div class="goods-scroll" data-ui-recipe="mobile-comparison-table">'), true);
 check('mobile simulated device rejected', fixture.replace('<div class="phone">', '<div class="mobile-device">'), false);
 check('mobile min canvas rejected', fixture.replace('.phone {', '.phone { width:min(390px, 100%);'), false);
 check('undeclared literal state rejected', fixture.replace("productDemo.setPageState('mobile', 'selected')", "productDemo.setPageState('mobile', 'missing')"), false);
@@ -140,6 +152,14 @@ check('invalid state result rejected', changeConfig(c => { c.pages[0].states[0].
 check('unlabeled inline SVG button rejected', fixture.replace('data-open>关联商品', 'data-open><svg><path d="M0 0"></path></svg>'), false);
 check('labeled inline SVG button accepted', fixture.replace('data-open>关联商品', 'data-open aria-label="打开选择"><svg><path d="M0 0"></path></svg>'), true);
 check('whitespace icon label rejected', fixture.replace('data-open>关联商品', 'data-open aria-label="   "><span data-demo-icon="plus"></span>'), false);
+const mixedTerminalConfig = structuredClone(config);
+const miniPage = structuredClone(mobile);
+miniPage.id = 'mini'; miniPage.label = '小程序 · 选择商品'; miniPage.terminal = 'mini-program'; miniPage.ui = { profile: 'mini-program', layout: 'list' }; miniPage.p0 = [];
+mixedTerminalConfig.pages.push(miniPage);
+const mixedTerminalHtml = `${html}<section data-page-panel="mini" data-p0=""><div class="mini-program-system-ui"><div class="mini-capsule" aria-label="小程序操作"></div></div></section>`;
+let mixedTerminals = slot(fixture, 'PRODUCT_HTML', mixedTerminalHtml);
+mixedTerminals = slot(mixedTerminals, 'PRODUCT_STYLE', style.replace('\n}</style>', '\n .mini-program-system-ui .mini-capsule { width: 70px; }\n}</style>'));
+check('APP and mini-program coexist with terminal-scoped chrome CSS', configure(mixedTerminalConfig, mixedTerminals), true);
 check('final valid fixture', fixture, true);
 for (const match of fixture.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)) new vm.Script(match[1]);
 console.log(`PASS ${count} contract cases; all inline scripts parse.`);
@@ -193,6 +213,7 @@ const navContext = {
   pageById: new Map(['list', 'form'].map(id => [id, { states: [{ id: 'default' }, { id: 'edit' }] }])),
   navigation: { page: 'list', states: new Map([['list', 'default'], ['form', 'default']]) },
   CSS: { escape: value => value },
+  finishUiDialog() {},
   $$: selector => selector === '[data-page-panel]' ? pageNodes : navNodes,
   businessFlowButton: { setAttribute(key, value) { this[key] = value; } },
   $: selector => selector === '#prototypeContent' ? { scrollTo() {} } : selector === '#businessFlowPanel' ? { hidden: true } : pageNodes.find(node => selector.includes('"' + node.dataset.pagePanel + '"')),
@@ -254,7 +275,7 @@ assert.equal(noteNodes.get('#notesRules').children.length, 0);
 console.log('PASS detailed notes: base/state rules, embedded Spec text, deduplication, page switch cleanup');
 
 // End-to-end assembly: independent output, then business-slot edit and ordinary validation.
-for (const systemId of ['mall-admin', 'middle-platform', 'mobile', 'mini-program']) {
+for (const systemId of ['mall-admin', 'middle-platform', 'supplier-admin', 'mobile', 'mini-program']) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'system-shell-integration-'));
   const cli = path.join(__dirname, 'scaffold-demo.js');
   const created = spawnSync(process.execPath, [cli, dir, '--system', systemId], {encoding:'utf8'});
@@ -262,10 +283,10 @@ for (const systemId of ['mall-admin', 'middle-platform', 'mobile', 'mini-program
   const file = path.join(dir, 'demo/index.html');
   let assembled = fs.readFileSync(file, 'utf8');
   assert.ok(!assembled.includes('INCLUDE:'));
-  assert.ok(assembled.includes(systemId === 'mall-admin' ? 'data-page-panel="main"' : systemId === 'middle-platform' ? 'data-page-panel="suppliers"' : systemId === 'mobile' ? 'data-page-panel="mobile-page"' : 'data-page-panel="mini-home"'));
+  assert.ok(assembled.includes(systemId === 'mall-admin' ? 'data-page-panel="main"' : systemId === 'middle-platform' ? 'data-page-panel="suppliers"' : systemId === 'supplier-admin' ? 'data-page-panel="supplier-onboarding"' : systemId === 'mobile' ? 'data-page-panel="mobile-page"' : 'data-page-panel="mini-home"'));
   if (systemId === 'mobile') {
     for (const chrome of ['mobile-status-bar', 'mobile-cellular', 'mobile-wifi', 'mobile-battery']) assert.ok(assembled.includes(chrome), `mobile missing reusable chrome: ${chrome}`);
-    assert.ok(!assembled.includes('mini-capsule'), 'APP/H5 mobile shell must not include mini-program capsule');
+    assert.ok(!assembled.includes('class="mini-capsule"'), 'APP/H5 mobile shell must not include mini-program capsule');
   }
   if (systemId === 'mini-program') {
     for (const chrome of ['mini-program-system-ui', 'mini-status-bar', 'mini-cellular', 'mini-wifi', 'mini-battery', 'mini-capsule', 'mini-close-program']) assert.ok(assembled.includes(chrome), `mini-program missing reusable chrome: ${chrome}`);

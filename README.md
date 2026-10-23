@@ -1,6 +1,6 @@
 # Product Spec & Demo Assistant
 
-一个面向产品经理的 Codex Skill：将已确认的产品需求整理为可开发验收的 SPEC，并生成可交互的单 HTML 三栏 Demo。Demo 左栏说明页面与目标，中栏演示产品页面，右栏写清字段、规则、状态、边界与结果。
+一个面向产品经理的 Codex Skill：将已确认的产品需求整理为可开发验收的 SPEC，并生成可交互的单 HTML 三栏 Demo。Demo 左栏说明页面与目标，中栏演示产品页面，右栏写清字段、规则、状态、边界与结果；进入原型后默认隐藏，可通过顶部“说明”开关展开。
 
 它适合后台、中台、APP / H5 和微信小程序的产品方案沟通；不用于营销站点或品牌宣传页。
 
@@ -10,7 +10,9 @@
 
 ## 效果示例
 
-仓库附带了一个脱敏的 [会员积分兑换 SPEC](examples/membership-points/SPEC.md) 与对应的 [可交互 Demo](examples/membership-points/demo/index.html)。它覆盖选择权益、积分不足和兑换成功三种状态，并将 Spec 中的规则同步呈现在右栏。
+仓库维护一个教学用途的 [会员积分兑换 SPEC](examples/membership-points/SPEC.md) 与对应的 [可交互 Demo](examples/membership-points/demo/index.html)。它覆盖选择权益、积分不足、兑换成功及返回后余额保留，并将 Spec 中的规则同步呈现在右栏。示例只演示一次成功兑换；终端、重复兑换等教学约定与未决项见其 Spec，不能替代实际需求确认。历史独立示例 `business-scenario-overview.html` 已移出仓库归档，不再作为模板维护。
+
+以下截图为旧版教学状态示意，不作为当前行为或默认布局基线；当前规则及状态以维护中的 SPEC 和可交互 Demo 为准。
 
 | 选择权益 | 兑换成功 |
 | --- | --- |
@@ -45,7 +47,7 @@ node scripts/scaffold-demo.js <SPEC目录> --system mobile
 node scripts/scaffold-demo.js <SPEC目录> --check-shell --spec <SPEC目录>/SPEC.md
 ```
 
-`npm run preview` 会生成 `assets/shell-preview/index.html`，用于查看可复用外壳；该文件是本地生成物，不提交到仓库。
+`npm run preview` 会重新生成 `assets/shell-preview/index.html`，用于查看可复用外壳；该文件是本地生成物，不提交到仓库。
 
 ## 支持的系统外壳
 
@@ -53,6 +55,7 @@ node scripts/scaffold-demo.js <SPEC目录> --check-shell --spec <SPEC目录>/SPE
 | --- | --- |
 | `mall-admin` | 商城后台 |
 | `middle-platform` | 中台系统 |
+| `supplier-admin` | 供应商后台 |
 | `mobile` | APP / H5 |
 | `mini-program` | 微信小程序 |
 
@@ -62,9 +65,15 @@ node scripts/scaffold-demo.js <SPEC目录> --check-shell --spec <SPEC目录>/SPE
 SKILL.md                    技能行为与交付规则
 assets/demo-template/       三栏 Demo 母版
 assets/system-shells/       按终端或系统划分的可复用外壳
+assets/business-ui/         终端 recipe、设计 tokens 与 UI 审计运行时
+assets/shell-preview/       可重建的本地预览，不纳入版本管理
+examples/membership-points/ 维护中的教学 Spec 与 Demo
+agents/                    技能发现与调用配置
 references/                 SPEC、评审与 Demo 规范
 scripts/                    脚手架、校验与回归测试
 ```
+
+生成流程依赖 `assets/business-ui/` 与 `references/ui-design-guidelines.md`，发布或迁移技能时需随核心文件一起保留。业务页面从脚手架创建，示例仅供理解交付效果。
 
 ## 隐私与贡献
 

@@ -112,6 +112,97 @@
     .notes p, .notes ul { color: #4b5563; font-size: 13px; }
     .notes ul { display: grid; gap: 5px; padding-left: 18px; }
     .rule-groups { display: grid; gap: 12px; }
+    /* Injected into the product-page scope by shell-library.js. */
+[data-ui-root] {
+  --ui-page-gutter: 20px;
+  --ui-section-gap: 24px;
+  --ui-field-gap: 16px;
+  --ui-control-gap: 8px;
+  --ui-body-size: 14px;
+  --ui-control-height: 32px;
+  --ui-touch-target: 32px;
+  --ui-label-width: 112px;
+  color: #202733;
+  font-size: var(--ui-body-size);
+  line-height: 1.5;
+}
+[data-ui-root][data-ui-profile="middle-platform"] {
+  --ui-control-height: 33px;
+  --ui-label-width: 120px;
+}
+[data-ui-root][data-ui-profile="app"],
+[data-ui-root][data-ui-profile="h5"],
+[data-ui-root][data-ui-profile="mini-program"] {
+  --ui-page-gutter: 16px;
+  --ui-section-gap: 16px;
+  --ui-field-gap: 12px;
+  --ui-body-size: 16px;
+  --ui-control-height: 44px;
+  --ui-touch-target: 44px;
+  --ui-label-width: auto;
+}
+[data-ui-root][data-terminal="mini-program"] { --ui-safe-top: 82px; --ui-safe-bottom: env(safe-area-inset-bottom, 0px); }
+[data-ui-safe-area-top] { padding-top: calc(var(--ui-safe-top, 0px) + env(safe-area-inset-top, 0px)); }
+[data-ui-safe-area-bottom] { padding-bottom: max(8px, env(safe-area-inset-bottom, 0px)); }
+[data-ui-recipe="pc-filter-bar"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, max-content));
+  align-items: end;
+  gap: var(--ui-control-gap) var(--ui-field-gap);
+  padding: var(--ui-field-gap);
+}
+[data-ui-recipe="pc-data-table"] {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+[data-ui-recipe="pc-data-table"] th,
+[data-ui-recipe="pc-data-table"] td {
+  min-height: var(--ui-control-height);
+  padding: 10px 12px;
+  vertical-align: middle;
+}
+[data-ui-recipe="pc-data-table"] [data-ui-align="numeric"] { text-align: right; }
+[data-ui-recipe="pc-aligned-form"] {
+  display: grid;
+  grid-template-columns: minmax(96px, var(--ui-label-width)) minmax(0, 1fr);
+  align-items: start;
+  column-gap: var(--ui-field-gap);
+  row-gap: var(--ui-field-gap);
+}
+[data-ui-recipe="pc-aligned-form"] :is(input, select, textarea, button) { min-height: var(--ui-control-height); }
+[data-ui-recipe="pc-context-drawer"] { position: absolute; inset-block: 0; inset-inline-end: 0; width: min(480px, 100%); overflow: auto; border-inline-start: 1px solid #dfe3e8; background: #fff; box-shadow: -8px 0 24px rgb(15 23 42 / .12); }
+[data-ui-recipe="pc-confirm-dialog"] { width: min(480px, calc(100vw - 48px)); padding: 24px; border: 1px solid #dfe3e8; border-radius: 8px; background: #fff; box-shadow: 0 16px 48px rgb(15 23 42 / .18); }
+[data-ui-dialog-layer][data-ui-dialog-open] { position: absolute; z-index: 20; inset: 0; display: grid; place-items: center; padding: 24px; background: transparent; pointer-events: none; }
+[data-ui-dialog-layer][data-ui-dialog-open] > [role="dialog"] { pointer-events: auto; }
+[data-ui-recipe="mobile-record-list"] { display: grid; align-content: start; grid-auto-rows: max-content; gap: var(--ui-control-gap); padding: 0 var(--ui-page-gutter); }
+[data-ui-recipe="mobile-filter-sheet"][data-ui-dialog-open] { position: absolute; z-index: 20; inset: 0; display: flex; align-items: flex-end; background: transparent; pointer-events: none; }
+[data-ui-recipe="mobile-filter-sheet"][data-ui-dialog-open] > [role="dialog"] { width: 100%; max-height: 85%; overflow: auto; padding: var(--ui-field-gap) var(--ui-page-gutter) max(16px, env(safe-area-inset-bottom)); border-radius: 20px 20px 0 0; background: #fff; pointer-events: auto; }
+[data-ui-recipe="mobile-field-stack"] { display: grid; gap: var(--ui-field-gap); padding: 0 var(--ui-page-gutter); }
+[data-ui-mobile-page] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; min-height: 0; }
+[data-ui-mobile-page] > [data-ui-scroll-content] { min-height: 0; overflow: auto; }
+[data-ui-recipe="mobile-select-list"] { display: grid; gap: var(--ui-control-gap); }
+[data-ui-root] :is(button, input:not([type="checkbox"]):not([type="radio"]), select, textarea, [role="button"]):not(.mini-capsule *) {
+  min-height: var(--ui-touch-target);
+}
+[data-ui-root] label:has(input[type="checkbox"], input[type="radio"]) {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--ui-touch-target);
+  gap: var(--ui-control-gap);
+}
+[data-ui-recipe="mobile-select-list"] :is(button, label) { display: flex; align-items: center; min-height: var(--ui-touch-target); }
+[data-ui-recipe="mobile-comparison-table"] { display: block; max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+[data-ui-recipe="mobile-bottom-action"] { min-height: var(--ui-touch-target); padding: 8px var(--ui-page-gutter) max(8px, env(safe-area-inset-bottom)); }
+[data-ui-align-group] { min-width: 0; }
+[data-ui-recipe] :is(button, input, select, textarea, a[href]) { font: inherit; }
+[data-ui-recipe] :is(button, input, select, textarea, a[href]):focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-ui-root] *, [data-ui-root] *::before, [data-ui-root] *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
   </style>
 <!-- LOCKED:HEAD:END -->
 
@@ -152,7 +243,7 @@
 
 <!-- EDITABLE:PRODUCT_STYLE:START -->
 <style id="productStyles">@scope ([data-page-panel]) {
-  .points-app{display:grid;grid-template-rows:144px 1fr auto;height:100%;background:#f6f7f9;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.points-hero{padding:58px 20px 20px;background:linear-gradient(140deg,#2559da,#6388fa);color:#fff}.points-hero h1{margin:0;font-size:23px}.points-hero p{margin:9px 0 0;opacity:.82;font-size:13px}.balance{display:flex;align-items:end;justify-content:space-between;margin-top:15px}.balance strong{font-size:32px;line-height:1}.balance span{font-size:12px}.points-list{padding:18px 16px 96px;overflow:auto}.points-list h2{margin:0 0 12px;font-size:16px}.reward{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;width:100%;margin:10px 0;padding:14px;border:1px solid #e7e9ee;border-radius:15px;background:#fff;color:#172033;text-align:left}.reward[aria-pressed="true"]{border-color:#3969e8;box-shadow:0 0 0 2px #dfe8ff}.reward .badge{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#edf2ff;color:#3f68d8;font-weight:750}.reward b{display:block;font-size:14px}.reward small{display:block;margin-top:5px;color:#778197;font-size:12px}.reward em{color:#ec6b45;font-size:13px;font-style:normal;font-weight:700}.exchange-bar{display:flex;gap:10px;align-items:center;padding:14px 16px 22px;border-top:1px solid #e7e9ee;background:#fff}.exchange-bar span{flex:1;color:#68738a;font-size:12px}.exchange-bar button{padding:12px 17px;border:0;border-radius:10px;background:#315fdd;color:#fff;font-weight:700}.exchange-bar button:disabled{background:#c8cedb}.notice{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#fff1ed;color:#c25232;font-size:12px}.success-card{margin:70px 20px 0;padding:28px 22px;border-radius:22px;background:#fff;text-align:center;box-shadow:0 10px 30px #24396d18}.success-card .check{display:grid;place-items:center;width:54px;height:54px;margin:auto;border-radius:50%;background:#e6f7ec;color:#22844a;font-size:27px}.success-card h2{margin:16px 0 8px;font-size:21px}.success-card p{margin:0;color:#758095;font-size:13px}.code{margin:20px 0;padding:14px;border-radius:12px;background:#f3f6ff;color:#315fdd;font-size:18px;font-weight:800;letter-spacing:1px}.success-card button{width:100%;padding:12px;border:0;border-radius:10px;background:#315fdd;color:#fff;font-weight:700}
+  .points-app{display:grid;grid-template-rows:180px 1fr auto;height:100%;background:#f6f7f9;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.points-hero{padding:58px 20px 20px;background:linear-gradient(140deg,#2559da,#6388fa);color:#fff}.points-hero h1{margin:0;font-size:23px}.points-hero p{margin:9px 0 0;opacity:.82;font-size:13px}.balance{display:flex;align-items:end;justify-content:space-between;margin-top:15px}.balance strong{font-size:32px;line-height:1}.balance span{font-size:12px}.points-list{padding:18px 16px 24px;overflow:auto}.points-list h2{margin:0 0 12px;font-size:16px}.reward{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;width:100%;margin:0;padding:14px;border:1px solid #e7e9ee;border-radius:15px;background:#fff;color:#172033;text-align:left}.reward:disabled{opacity:.65}.reward [data-redeemed]{margin-top:5px;color:#22844a;font-size:12px}.reward[aria-pressed="true"]{border-color:#3969e8;box-shadow:0 0 0 2px #dfe8ff}.reward .badge{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#edf2ff;color:#3f68d8;font-weight:750}.reward b{display:block;font-size:14px}.reward small{display:block;margin-top:5px;color:#778197;font-size:12px}.reward em{color:#ec6b45;font-size:13px;font-style:normal;font-weight:700}.exchange-bar{display:flex;gap:10px;align-items:center;padding:14px 16px 22px;border-top:1px solid #e7e9ee;background:#fff}.exchange-bar span{flex:1;color:#68738a;font-size:12px}.exchange-bar button{min-height:44px;padding:10px 17px;border:0;border-radius:10px;background:#315fdd;color:#fff;font-weight:700}.exchange-bar button:disabled{background:#c8cedb}.notice{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#fff1ed;color:#c25232;font-size:12px}.success-card{margin:70px 20px 0;padding:28px 22px;border-radius:22px;background:#fff;text-align:center;box-shadow:0 10px 30px #24396d18}.success-card .check{display:grid;place-items:center;width:54px;height:54px;margin:auto;border-radius:50%;background:#e6f7ec;color:#22844a;font-size:27px}.success-card h2{margin:16px 0 8px;font-size:21px}.success-card p{margin:0;color:#758095;font-size:13px}.code{margin:20px 0;padding:14px;border-radius:12px;background:#f3f6ff;color:#315fdd;font-size:18px;font-weight:800;letter-spacing:1px}.success-card button{width:100%;min-height:44px;padding:10px;border:0;border-radius:10px;background:#315fdd;color:#fff;font-weight:700}
 }</style>
 <!-- EDITABLE:PRODUCT_STYLE:END -->
 
@@ -165,11 +256,11 @@
       <button id="enterDemo" class="primary" type="button">进入原型</button>
     </div>
   </section>
-  <div id="app" class="app" hidden>
+  <div id="app" class="app hide-notes" hidden>
     <header class="toolbar">
       <div id="demoTitle" class="toolbar-title">需求原型</div>
       <button id="toggleOverview" class="toggle" type="button" aria-pressed="true">概述：显示</button>
-      <button id="toggleNotes" class="toggle" type="button" aria-pressed="true">说明：显示</button>
+      <button id="toggleNotes" class="toggle" type="button" aria-pressed="false">说明：隐藏</button>
     </header>
     <main class="layout">
       <aside id="overviewPanel" class="panel">
@@ -184,7 +275,7 @@
 <!-- LOCKED:BODY:END -->
 
 <!-- EDITABLE:PRODUCT_HTML:START -->
-<section data-page-panel="points-exchange" data-p0="P0-01 P0-02"><div class="points-app"><header class="points-hero"><h1>积分中心</h1><p>选择权益，积分到账后即可兑换</p><div class="balance"><span>可用积分</span><strong data-balance>1,280</strong></div></header><main class="points-list"><h2>可兑换权益</h2><p class="notice" data-notice hidden></p><button class="reward" type="button" data-reward="coffee" data-cost="800" aria-pressed="false"><span class="badge">咖啡</span><span><b>精品咖啡兑换券</b><small>有效期 30 天</small></span><em>800 积分</em></button><button class="reward" type="button" data-reward="hotel" data-cost="1600" aria-pressed="false"><span class="badge">酒店</span><span><b>周末酒店立减券</b><small>有效期 15 天</small></span><em>1,600 积分</em></button></main><footer class="exchange-bar"><span data-selection>请选择一项权益</span><button type="button" data-exchange disabled>确认兑换</button></footer></div></section>
+<section data-page-panel="points-exchange" data-p0="P0-01 P0-02"><div class="points-app"><header class="points-hero"><h1>积分中心</h1><p>选择权益，积分到账后即可兑换</p><div class="balance"><span>可用积分</span><strong data-balance>1,280</strong></div></header><main class="points-list" data-ui-recipe="mobile-record-list" data-ui-scroll-content><h2>可兑换权益</h2><p class="notice" data-notice hidden></p><button class="reward" type="button" data-reward="coffee" data-cost="800" aria-pressed="false"><span class="badge">咖啡</span><span><b>精品咖啡兑换券</b><small>有效期 30 天</small></span><span><em>800 积分</em><b data-redeemed hidden>已兑换</b></span></button><button class="reward" type="button" data-reward="hotel" data-cost="1600" aria-pressed="false"><span class="badge">酒店</span><span><b>周末酒店立减券</b><small>有效期 15 天</small></span><span><em>1,600 积分</em><b data-redeemed hidden>已兑换</b></span></button></main><footer class="exchange-bar" data-ui-recipe="mobile-bottom-action"><span data-selection>请选择一项权益</span><button type="button" data-exchange disabled>确认兑换</button></footer></div><div data-success hidden></div></section>
 <!-- EDITABLE:PRODUCT_HTML:END -->
 
 <!-- LOCKED:NOTES:START -->
@@ -204,7 +295,7 @@
 <!-- LOCKED:NOTES:END -->
 
 <!-- EDITABLE:CONFIG:START -->
-<script>window.DEMO_CONFIG = {"title":"会员积分兑换 · 交互 Demo","overview":"让会员在移动端清楚选择权益、确认积分条件，并看到兑换成功或不足时的可恢复结果。","specSections":{"积分兑换页 · 权益与确认规则":{"title":"7. 积分兑换页 · 权益与确认规则","items":["可用积分默认展示为 1,280；权益列表按所需积分升序展示。","每次仅可选择一项权益；未选择时兑换按钮禁用。","余额足够才扣减并展示兑换码；不足时不扣减积分，用户可改选其他权益。"]}},"pages":[{"id":"points-exchange","label":"积分兑换页","overview":"从积分中心选择权益并确认兑换；同时展示成功与积分不足两种关键结果。","surface":"mobile","terminal":"app","viewport":{"width":390,"height":844},"p0":["P0-01","P0-02"],"visual":{"status":"none"},"states":[{"id":"default","label":"待选择"},{"id":"selected","label":"已选择权益"},{"id":"insufficient","label":"积分不足","notes":{"result":"余额不变，不生成兑换码；用户可改选其他权益。"}},{"id":"success","label":"兑换成功","notes":{"result":"已扣减本地演示积分并展示兑换码。"}}],"notes":{"description":"会员在同一页面选择权益并完成兑换，不足时无需离开页面即可恢复选择。","groups":[{"title":"权益与余额","items":["可用积分初始值为 1,280；权益按所需积分升序展示。","每次只能选一项权益；未选择时“确认兑换”禁用。"]},{"title":"确认兑换","items":["所需积分不高于可用积分时，扣减积分并展示兑换码。","所需积分高于可用积分时，不扣减、不生成兑换码，并保留当前选择。"]}],"specRefs":["积分兑换页 · 权益与确认规则"],"result":"选择权益后可确认兑换。","boundary":"仅在当前浏览器内维护演示数据，不请求真实积分或发放服务。"}}],"businessFlow":{"title":"会员积分兑换","summary":"会员在积分中心浏览权益、选择一项并确认；系统按可用积分判断是否完成兑换。","outcome":"积分足够时扣减积分并展示兑换码；不足时不扣减、不生成兑换码，会员可改选。","boundary":"记录名称和示例值用于说明业务，不表示已确认物理表结构；兑换数据仅保存在当前浏览器演示中。","stages":[{"id":"enter","label":"进入积分中心","summary":"查看可用积分与可兑换权益","actions":[{"role":"会员","kind":"trigger","mode":"online","system":"APP · 积分中心","text":"进入兑换页并浏览权益"}],"records":[{"name":"会员积分账户（业务示意）","sampleData":"会员：当前演示会员 · 可用积分：1,280"}]},{"id":"choose","label":"选择权益","summary":"选择一项权益并查看所需积分","actions":[{"role":"会员","kind":"execute","mode":"online","system":"APP · 积分中心","text":"选择一项权益，查看兑换所需积分"}],"records":[]},{"id":"confirm","label":"确认兑换","summary":"系统按余额判断兑换结果","actions":[{"role":"会员","kind":"trigger","mode":"online","system":"APP · 积分中心","text":"确认兑换所选权益"},{"role":"积分系统","kind":"execute","mode":"online","system":"积分服务（示意）","text":"比较可用积分与所需积分","condition":"可用积分不少于所需积分时成功，否则提示不足"}],"records":[{"name":"兑换结果（业务示意）","sampleData":"精品咖啡兑换券：800 积分→兑换成功并生成兑换码；周末酒店立减券：1,600 积分→积分不足，余额不变"}]}]}};</script>
+<script>window.DEMO_CONFIG = {"title":"会员积分兑换 · 交互 Demo","overview":"让会员在移动端清楚选择权益、确认积分条件，并看到兑换成功或不足时的可恢复结果。","specSections":{"积分兑换页 · 权益与确认规则":{"title":"7. 积分兑换页 · 权益与确认规则","items":["可用积分默认展示为 1,280；权益列表按所需积分升序展示。","每次仅可选择一项权益；未选择时兑换按钮禁用。","余额足够才扣减并展示兑换码；不足时不扣减积分，用户可改选其他权益。"]}},"pages":[{"id":"points-exchange","label":"积分兑换页","overview":"从积分中心选择权益并确认兑换；同时展示成功与积分不足两种关键结果。","surface":"mobile","terminal":"app","ui":{"profile":"app","layout":"list"},"viewport":{"width":390,"height":844},"p0":["P0-01","P0-02"],"visual":{"status":"none"},"states":[{"id":"default","label":"待选择"},{"id":"selected","label":"已选择权益"},{"id":"insufficient","label":"积分不足","notes":{"result":"余额不变，不生成兑换码；用户可改选其他权益。"}},{"id":"success","label":"兑换成功","notes":{"result":"已扣减本地演示积分并展示兑换码。"}},{"id":"returned","label":"兑换后返回","notes":{"result":"返回积分中心，保留扣减后的余额及已兑换标记。","boundary":"教学样例仅演示一次成功兑换；后续兑换流程未实现，不代表正式次数限制。"}}],"notes":{"description":"会员在同一页面选择权益并完成兑换，不足时无需离开页面即可恢复选择。","groups":[{"title":"权益与余额","items":["可用积分初始值为 1,280；权益按所需积分升序展示。","每次只能选一项权益；未选择时“确认兑换”禁用，选择后按钮显示本次所需积分。"]},{"title":"确认兑换","items":["所需积分不高于可用积分时，扣减积分并展示兑换码。","所需积分高于可用积分时，不扣减、不生成兑换码，并保留当前选择。","成功返回后余额不重置，成功兑换的权益显示“已兑换”。"]}],"specRefs":["积分兑换页 · 权益与确认规则"],"result":"选择权益后可确认兑换。","boundary":"仅在当前页面生命周期维护演示数据，刷新后重置；不请求真实积分或发放服务。仅演示一次成功兑换，成功后列表供查看；再次兑换规则未定义。APP 为教学外壳选择，真实需求仍须确认 APP/H5/小程序终端。"}}],"businessFlow":{"title":"会员积分兑换","summary":"会员在积分中心浏览权益、选择一项并确认；系统按可用积分判断是否完成兑换。","outcome":"积分足够时扣减积分并展示兑换码；不足时不扣减、不生成兑换码，会员可改选。","boundary":"记录名称和示例值用于说明业务，不表示已确认物理表结构；兑换数据仅保存在当前浏览器演示中。 APP 为教学外壳选择，非真实需求确认；再次兑换规则未定义。","stages":[{"id":"enter","label":"进入积分中心","summary":"查看可用积分与可兑换权益","actions":[{"role":"会员","kind":"trigger","mode":"online","system":"APP · 积分中心","text":"进入兑换页并浏览权益"}],"records":[{"name":"会员积分账户（业务示意）","sampleData":"会员：当前演示会员 · 可用积分：1,280"}]},{"id":"choose","label":"选择权益","summary":"选择一项权益并查看所需积分","actions":[{"role":"会员","kind":"execute","mode":"online","system":"APP · 积分中心","text":"选择一项权益，查看兑换所需积分"}],"records":[]},{"id":"confirm","label":"确认兑换","summary":"系统按余额判断兑换结果","actions":[{"role":"会员","kind":"trigger","mode":"online","system":"APP · 积分中心","text":"确认兑换所选权益"},{"role":"积分系统","kind":"execute","mode":"online","system":"积分服务（示意）","text":"比较可用积分与所需积分","condition":"可用积分不少于所需积分时成功，否则提示不足"}],"records":[{"name":"兑换结果（业务示意）","sampleData":"精品咖啡兑换券：800 积分→兑换成功并生成兑换码；周末酒店立减券：1,600 积分→积分不足，余额不变"}]}]}};</script>
 <!-- EDITABLE:CONFIG:END -->
 
 <!-- LOCKED:RUNTIME:START -->
@@ -373,6 +464,180 @@
           localTabs.appendChild(tab);
         }
       };
+          const uiManifest = {"version":1,"profiles":{"mall-admin":{"terminal":"pc-web","surface":"mall-admin","label":"商城后台"},"middle-platform":{"terminal":"pc-web","surface":"custom-admin","label":"中台后台"},"desktop-default":{"terminal":"pc-web","surface":"custom-admin","label":"通用 PC 后台"},"app":{"terminal":"app","surface":"mobile","label":"APP"},"h5":{"terminal":"h5","surface":"mobile","label":"移动 H5"},"mini-program":{"terminal":"mini-program","surface":"mobile","label":"微信小程序"}},"layouts":["list","form","detail","dashboard","mixed"],"recipes":{"pc-filter-bar":{"terminals":["pc-web"],"layouts":["list","mixed"]},"pc-data-table":{"terminals":["pc-web"],"layouts":["list","mixed"]},"pc-aligned-form":{"terminals":["pc-web"],"layouts":["form","mixed"]},"pc-context-drawer":{"terminals":["pc-web"],"layouts":["list","detail","mixed"],"review":"Keep the underlying list usable; label the region and restore focus to its trigger on close."},"pc-confirm-dialog":{"terminals":["pc-web"],"layouts":["list","form","detail","mixed"],"review":"Use only for a short, consequential decision; provide explicit cancel and confirm actions."},"mobile-record-list":{"terminals":["app","h5","mini-program"],"layouts":["list","mixed"]},"mobile-filter-sheet":{"terminals":["app","h5","mini-program"],"layouts":["list","mixed"]},"mobile-field-stack":{"terminals":["app","h5","mini-program"],"layouts":["form","mixed"]},"mobile-select-list":{"terminals":["app","h5","mini-program"],"layouts":["form","mixed"]},"mobile-comparison-table":{"terminals":["app","h5","mini-program"],"layouts":["list","mixed"],"review":"Check horizontal scrolling and access to every compared value and action."},"mobile-bottom-action":{"terminals":["app","h5","mini-program"],"layouts":["list","form","detail","mixed"]}}};
+      const pageTerminal = (page) => page.surface === "mobile" ? page.terminal : "pc-web";
+      const defaultProfile = (page) => {
+        if (page.surface === "mobile") return page.terminal;
+        if (page.surface === "mall-admin") return "mall-admin";
+        if (/中台|middle-platform/i.test(page.systemName || "")) return "middle-platform";
+        return "desktop-default";
+      };
+      const normalizeUiPage = (page) => {
+        const profile = page.ui?.profile || defaultProfile(page);
+        const layout = page.ui?.layout || "mixed";
+        return { profile, layout, terminal: pageTerminal(page) };
+      };
+      const attachUiProfile = (page, panel) => {
+        const ui = normalizeUiPage(page);
+        panel.dataset.terminal = ui.terminal;
+        panel.dataset.uiProfile = ui.profile;
+        panel.dataset.uiLayout = ui.layout;
+        panel.dataset.uiRoot = "";
+      };
+      const uiError = (pageId, rule, element, message) => ({
+        page: pageId,
+        state: navigation.states.get(pageId) || "default",
+        rule,
+        element: element?.getAttribute?.("data-ui-recipe") || element?.tagName?.toLowerCase() || "page",
+        position: element?.getBoundingClientRect ? (() => { const rect = element.getBoundingClientRect(); return { x: Math.round(rect.x), y: Math.round(rect.y), width: Math.round(rect.width), height: Math.round(rect.height) }; })() : null,
+        message
+      });
+      const isSystemChrome = (element) => {
+        const shell = element.closest('[data-admin-shell], .mp-shell, .mini-program-shell, .mobile-shell');
+        if (!shell || element.closest('[data-ui-scope], [data-ui-recipe], [data-admin-content], .mini-program-content, .mobile-content, .mp-main')) return false;
+        if (shell.matches('[data-admin-shell]')) return true;
+        if (shell.matches('.mp-shell')) return !!element.closest('.mp-sidebar, .mp-top, .mp-tabs');
+        if (shell.matches('.mini-program-shell')) return !!element.closest('.mini-program-system-ui');
+        return !!element.closest('.mobile-status-bar');
+      };
+      const auditUI = () => {
+        const errors = [];
+        const warnings = [];
+        for (const page of config.pages) {
+          const panel = $(`[data-page-panel="${CSS.escape(page.id)}"]`);
+          if (!panel) { errors.push(uiError(page.id, "ui.page", null, "配置页面没有对应中栏")); continue; }
+          const wasHidden = panel.hidden;
+          if (wasHidden) panel.hidden = false;
+          try {
+          if (!page.ui || typeof page.ui !== "object" || Array.isArray(page.ui) || typeof page.ui.profile !== "string" || typeof page.ui.layout !== "string") errors.push(uiError(page.id, "ui.config", panel, "页面必须显式声明 ui.profile 与 ui.layout；不能依赖通用默认值"));
+          const ui = normalizeUiPage(page);
+          const profile = uiManifest.profiles[ui.profile];
+          if (!profile) errors.push(uiError(page.id, "ui.profile", panel, `未知 UI profile：${ui.profile}`));
+          else if (profile.terminal !== ui.terminal) errors.push(uiError(page.id, "ui.terminal-profile", panel, `${ui.profile} 不适用于 ${ui.terminal}`));
+          else if (profile.surface !== page.surface) errors.push(uiError(page.id, "ui.surface-profile", panel, `${ui.profile} 不适用于 ${page.surface}`));
+          if (!uiManifest.layouts.includes(ui.layout)) errors.push(uiError(page.id, "ui.layout", panel, `未知页面布局：${ui.layout}`));
+          for (const element of $$('[data-ui-recipe]', panel)) {
+            const name = element.dataset.uiRecipe;
+            const recipe = uiManifest.recipes[name];
+            if (!recipe) { errors.push(uiError(page.id, "ui.recipe-known", element, `未知 recipe：${name}`)); continue; }
+            if (!recipe.terminals.includes(ui.terminal)) errors.push(uiError(page.id, "ui.recipe-terminal", element, `${name} 不适用于 ${ui.terminal}`));
+            if (!recipe.layouts.includes(ui.layout)) errors.push(uiError(page.id, "ui.recipe-layout", element, `${name} 不适用于 ${ui.layout} 页面`));
+            if (recipe.review) warnings.push(uiError(page.id, "ui.recipe-review", element, recipe.review));
+            if (name === "mobile-comparison-table") {
+              if (element.getAttribute("role") !== "region" || (!element.getAttribute("aria-label") && !element.getAttribute("aria-labelledby"))) errors.push(uiError(page.id, "ui.comparison-name", element, "移动比较表容器须声明 role=region 和可访问名称"));
+              if (element.tabIndex < 0) errors.push(uiError(page.id, "ui.comparison-keyboard", element, "移动比较表容器须可通过键盘聚焦，以便键盘用户滚动比较内容"));
+              const style = getComputedStyle(element);
+              if (element.scrollWidth > element.clientWidth && !["auto", "scroll"].includes(style.overflowX)) errors.push(uiError(page.id, "ui.comparison-scroll", element, "比较内容超出容器时须提供真实横向滚动"));
+            }
+          }
+          for (const group of new Set($$('[data-ui-align-group]', panel).map((element) => element.dataset.uiAlignGroup))) {
+            const nodes = $$('[data-ui-align-group]', panel).filter((element) => element.dataset.uiAlignGroup === group && element.getClientRects().length);
+            if (nodes.length < 2) continue;
+            const positions = nodes.map((element) => element.getBoundingClientRect().left);
+            if (Math.max(...positions) - Math.min(...positions) > 1) errors.push(uiError(page.id, "ui.alignment", nodes[0], `对齐组 ${group} 的左边缘相差超过 1px`));
+          }
+          if (page.surface === "mobile" && page.terminal !== "mini-program" && $$('[class~="mini-capsule"], [class~="mini-program-system-ui"], [class~="mini-status-bar"], [class~="mini-status-icons"], [class~="mini-cellular"], [class~="mini-wifi"], [class~="mini-battery"], [class~="mini-close-program"]', panel).length) errors.push(uiError(page.id, "ui.mini-program-chrome", panel, `${page.terminal} 页面不应包含小程序胶囊或系统层`));
+          if (!profile) continue;
+          const minTarget = ui.terminal === "pc-web" ? 32 : 44;
+          const panelRect = panel.getBoundingClientRect();
+          const comparison = '[data-ui-recipe="mobile-comparison-table"]';
+          for (const element of $$('h1, h2, h3, button, input:not([type="hidden"]), select, textarea, a[href], [role="button"]', panel)) {
+            if (!element.getClientRects().length || isSystemChrome(element) || element.closest('[data-system-ui], .mini-program-system-ui, .mini-capsule, .mobile-status-bar, .mini-status-bar')) continue;
+            const rect = element.getBoundingClientRect();
+            const scroller = element.closest(comparison);
+            const scrollableComparison = scroller && ["auto", "scroll"].includes(getComputedStyle(scroller).overflowX) && scroller.scrollWidth > scroller.clientWidth;
+            if ((rect.left < panelRect.left - 1 || rect.right > panelRect.right + 1) && !scrollableComparison) errors.push(uiError(page.id, "ui.horizontal-overflow", element, "页面内容超出终端画布；比较表超出时必须由实际可横向滚动的 recipe 容器承载"));
+          }
+          if (ui.terminal === "mini-program") {
+            const systemUi = panel.querySelector(".mini-program-system-ui");
+            const safeTop = systemUi ? systemUi.getBoundingClientRect().bottom + 8 : panelRect.top + 90;
+            for (const element of $$('h1, h2, h3, button, input:not([type="hidden"]), select, textarea, a[href], [role="button"]', panel)) {
+              if (!element.getClientRects().length || isSystemChrome(element) || element.closest('[data-system-ui], .mini-program-system-ui, .mini-capsule, .mobile-status-bar, .mini-status-bar')) continue;
+              if (element.getBoundingClientRect().top < safeTop) errors.push(uiError(page.id, "ui.mini-program-safe-area", element, `业务内容应避让状态栏与胶囊；内容起点需低于 y=${Math.round(safeTop)}px`));
+            }
+          }
+          for (const control of $$('button, input:not([type="hidden"]), select, textarea, a[href], [role="button"]', panel)) {
+            if (isSystemChrome(control)) continue;
+            if (control.closest('[data-system-ui], .mini-capsule, .mobile-status-bar, .mini-status-bar')) continue;
+            let target = control;
+            if (/^(checkbox|radio)$/.test(control.type || "") && control.closest("label")) target = control.closest("label");
+            const rect = target.getBoundingClientRect();
+            if (rect.width && rect.height && (rect.width < minTarget || rect.height < minTarget)) {
+              errors.push(uiError(page.id, "ui.target-size", control, `交互目标 ${Math.round(rect.width)}×${Math.round(rect.height)}px，小于 ${minTarget}px 基线`));
+            }
+            if (control.tagName === "INPUT" || control.tagName === "SELECT" || control.tagName === "TEXTAREA") {
+              const label = control.id ? panel.querySelector(`label[for="${CSS.escape(control.id)}"]`) : control.closest("label");
+              if (!label && !control.getAttribute("aria-label") && !control.getAttribute("aria-labelledby")) errors.push(uiError(page.id, "ui.field-name", control, "表单控件缺少可访问名称"));
+            }
+          }
+          for (const button of $$("button", panel)) {
+            if (!button.textContent.trim() && !button.getAttribute("aria-label") && !button.getAttribute("aria-labelledby")) errors.push(uiError(page.id, "ui.button-name", button, "按钮缺少可访问名称"));
+          }
+          for (const content of $$('[data-ui-scroll-content]', panel)) {
+            const style = getComputedStyle(content);
+            if (ui.terminal !== "pc-web" && style.overflowY === "hidden") errors.push(uiError(page.id, "ui.mobile-scroll", content, "移动内容区被隐藏，用户无法滚动查看完整内容"));
+          }
+          for (const action of $$('[data-ui-recipe="mobile-bottom-action"]', panel)) {
+            const content = panel.querySelector('[data-ui-scroll-content]');
+            const position = getComputedStyle(action).position;
+            if (content) {
+              const contentRect = content.getBoundingClientRect();
+              const actionRect = action.getBoundingClientRect();
+              const overlaps = contentRect.bottom > actionRect.top + 1 && contentRect.top < actionRect.bottom && contentRect.right > actionRect.left && contentRect.left < actionRect.right;
+              if ((["fixed", "absolute"].includes(position) || overlaps) && Number.parseFloat(getComputedStyle(content).paddingBottom) < actionRect.height) errors.push(uiError(page.id, "ui.bottom-action-clearance", action, "滚动内容未为覆盖式底部操作保留足够避让空间"));
+            }
+          }
+          } finally {
+            if (wasHidden) panel.hidden = true;
+          }
+        }
+        return { ok: errors.length === 0, errors, warnings };
+      };
+      let activeUiDialog = null;
+      const finishUiDialog = (reason, cancelled, restoreFocus = true) => {
+        const active = activeUiDialog;
+        if (!active) return false;
+        activeUiDialog = null;
+        active.overlay.hidden = true;
+        active.overlay.removeAttribute("data-ui-dialog-open");
+        if (cancelled) {
+          try { active.onCancel?.(reason); }
+          catch (error) { console.error(`productDemo.openDialog onCancel failed for ${active.pageId} (${reason})`, error); }
+        }
+        if (restoreFocus && navigation.page === active.pageId) {
+          try {
+            if (active.trigger?.isConnected && !active.trigger.disabled) active.trigger.focus({ preventScroll: true });
+            else {
+              const panel = $(`[data-page-panel="${CSS.escape(active.pageId)}"]`);
+              if (panel) { panel.tabIndex = -1; panel.focus({ preventScroll: true }); }
+            }
+          } catch (error) { console.error(`productDemo.openDialog focus restoration failed for ${active.pageId}`, error); }
+        }
+        return true;
+      };
+      const openDialog = (pageId, options) => {
+        const page = pageById.get(pageId);
+        const panel = page && $(`[data-page-panel="${CSS.escape(pageId)}"]`);
+        const { overlay, dialog } = options || {};
+        if (!page || !panel || panel.hidden || navigation.page !== pageId) throw new Error("页内对话框只能在当前可见页面打开");
+        if (!overlay || !dialog || !panel.contains(overlay) || !overlay.contains(dialog)) throw new Error("overlay 与 dialog 必须属于对应的页面画布");
+        if (!dialog.getAttribute("aria-label") && !dialog.getAttribute("aria-labelledby")) throw new Error("dialog 需要 aria-label 或 aria-labelledby");
+        finishUiDialog("replaced", true, false);
+        dialog.setAttribute("role", "dialog");
+        dialog.setAttribute("aria-modal", "false");
+        activeUiDialog = { pageId, overlay, dialog, trigger: document.activeElement, onCancel: options.onCancel };
+        overlay.hidden = false;
+        overlay.setAttribute("data-ui-dialog-open", "true");
+        const focusTarget = options.initialFocus || dialog.querySelector('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex="-1"]') || dialog;
+        if (!dialog.hasAttribute("tabindex") && focusTarget === dialog) dialog.tabIndex = -1;
+        focusTarget.focus({ preventScroll: true });
+        return Object.freeze({ close: () => finishUiDialog("close", false), cancel: (reason = "cancel") => finishUiDialog(reason, true) });
+      };
+      document.addEventListener("keydown", (event) => {
+        if (!activeUiDialog || event.key !== "Escape" || event.defaultPrevented || event.isComposing) return;
+        event.preventDefault();
+        finishUiDialog("escape", true);
+      });
       if (pageById.size !== config.pages.length) throw new Error("DEMO_CONFIG.pages.id 不得重复");
       for (const page of config.pages) {
         const panel = $("[data-page-panel=\"" + CSS.escape(page.id) + "\"]");
@@ -383,6 +648,7 @@
         if (height > 0) { panel.style.height = `${height}px`; panel.style.minHeight = `${height}px`; }
         panel.dataset.state = "default";
         panel.dataset.surface = page.surface;
+        attachUiProfile(page, panel);
         if (page.surface === "mall-admin") renderMallAdminShell(page.id);
       }
 
@@ -603,6 +869,7 @@
 
       const showBusinessFlow = () => {
         if (!hasBusinessFlow) return;
+        finishUiDialog("navigation", true, false);
         navigation.page = businessFlowPageId;
         $("#businessFlowPanel").hidden = false;
         for (const panel of $$("[data-page-panel]")) panel.hidden = true;
@@ -614,6 +881,7 @@
 
       const showPage = (pageId) => {
         if (!pageById.has(pageId)) throw new Error(`未知页面：${pageId}`);
+        if (navigation.page !== pageId) finishUiDialog("navigation", true, false);
         navigation.page = pageId;
         $("#businessFlowPanel").hidden = true;
         for (const panel of $$("[data-page-panel]")) panel.hidden = panel.dataset.pagePanel !== navigation.page;
@@ -719,6 +987,8 @@
       else showPage(config.pages[0].id);
       window.productDemo = {
         audit,
+        auditUI,
+        openDialog,
         showPage,
         setPageState,
         setSide,
@@ -736,7 +1006,64 @@
 <!-- LOCKED:RUNTIME:END -->
 
 <!-- EDITABLE:PRODUCT_SCRIPT:START -->
-<script>const page=productDemo.getPage("points-exchange");let balance=1280,selected=null;const rewards=[...page.querySelectorAll("[data-reward]")],button=page.querySelector("[data-exchange]"),selection=page.querySelector("[data-selection]"),notice=page.querySelector("[data-notice]");const render=()=>{page.querySelector("[data-balance]").textContent=balance.toLocaleString();rewards.forEach(item=>item.setAttribute("aria-pressed",String(item===selected)));button.disabled=!selected;selection.textContent=selected?`兑换需 ${selected.dataset.cost} 积分`:"请选择一项权益"};rewards.forEach(item=>item.onclick=()=>{selected=item;notice.hidden=true;render();productDemo.setPageState("points-exchange","selected")});button.onclick=()=>{const cost=Number(selected.dataset.cost);if(cost>balance){notice.textContent="当前积分不足，可选择其他权益";notice.hidden=false;productDemo.setPageState("points-exchange","insufficient");return}balance-=cost;page.innerHTML=`<div class="points-app"><header class="points-hero"><h1>积分中心</h1><p>兑换结果</p><div class="balance"><span>剩余积分</span><strong>${balance.toLocaleString()}</strong></div></header><main><section class="success-card"><div class="check">✓</div><h2>兑换成功</h2><p>精品咖啡兑换券已放入你的权益包</p><div class="code">COFFEE-2026</div><button type="button" data-back>返回积分中心</button></section></main></div>`;page.querySelector("[data-back]").onclick=()=>location.reload();productDemo.setPageState("points-exchange","success")};render();</script>
+<script>
+const page = productDemo.getPage("points-exchange");
+const listView = page.querySelector(".points-app");
+let balance = 1280, selected = null, completed = false;
+const rewards = [...page.querySelectorAll("[data-reward]")];
+const button = page.querySelector("[data-exchange]");
+const selection = page.querySelector("[data-selection]");
+const notice = page.querySelector("[data-notice]");
+const render = () => {
+  page.querySelector("[data-balance]").textContent = balance.toLocaleString();
+  rewards.forEach(item => {
+    item.setAttribute("aria-pressed", String(item === selected));
+    item.disabled = completed;
+  });
+  button.disabled = !selected || completed;
+  button.textContent = completed ? "已兑换" : selected ? `确认兑换 · ${Number(selected.dataset.cost).toLocaleString()} 积分` : "确认兑换";
+  selection.textContent = selected ? selected.querySelector("b").textContent : "请选择一项权益";
+};
+rewards.forEach(item => item.onclick = () => {
+  if (completed) return;
+  selected = item;
+  notice.hidden = true;
+  render();
+  productDemo.setPageState("points-exchange", "selected");
+});
+button.onclick = () => {
+  if (!selected || completed) return;
+  const cost = Number(selected.dataset.cost);
+  if (cost > balance) {
+    notice.textContent = "当前积分不足，可选择其他权益";
+    notice.hidden = false;
+    productDemo.setPageState("points-exchange", "insufficient");
+    return;
+  }
+  balance -= cost;
+  completed = true;
+  selected.querySelector("[data-redeemed]").hidden = false;
+  render();
+  listView.hidden = true;
+  const successView = page.querySelector("[data-success]");
+  successView.hidden = false;
+  successView.style.height = "100%";
+  successView.innerHTML = `<div class="points-app"><header class="points-hero"><h1>积分中心</h1><p>兑换结果</p><div class="balance"><span>剩余积分</span><strong>${balance.toLocaleString()}</strong></div></header><main><section class="success-card"><div class="check" data-demo-icon="check-circle" aria-hidden="true"></div><h2>兑换成功</h2><p>${selected.querySelector("b").textContent}兑换已完成</p><div class="code">COFFEE-2026</div><button type="button" data-back>返回积分中心</button></section></main></div>`;
+  productDemo.hydrateIcons(page);
+  page.querySelector("[data-back]").onclick = () => {
+    successView.hidden = true;
+    successView.innerHTML = "";
+    listView.hidden = false;
+    render();
+    productDemo.setPageState("points-exchange", "returned");
+    const title = listView.querySelector("h1");
+    title.tabIndex = -1;
+    title.focus();
+  };
+  productDemo.setPageState("points-exchange", "success");
+};
+render();
+</script>
 <!-- EDITABLE:PRODUCT_SCRIPT:END -->
 
 <!-- LOCKED:END:START -->

@@ -112,6 +112,7 @@
     .notes p, .notes ul { color: #4b5563; font-size: 13px; }
     .notes ul { display: grid; gap: 5px; padding-left: 18px; }
     .rule-groups { display: grid; gap: 12px; }
+    /* INCLUDE:BUSINESS_UI_CSS */
   </style>
 <!-- LOCKED:HEAD:END -->
 
@@ -135,11 +136,11 @@
       <button id="enterDemo" class="primary" type="button">进入原型</button>
     </div>
   </section>
-  <div id="app" class="app" hidden>
+  <div id="app" class="app hide-notes" hidden>
     <header class="toolbar">
       <div id="demoTitle" class="toolbar-title">需求原型</div>
       <button id="toggleOverview" class="toggle" type="button" aria-pressed="true">概述：显示</button>
-      <button id="toggleNotes" class="toggle" type="button" aria-pressed="true">说明：显示</button>
+      <button id="toggleNotes" class="toggle" type="button" aria-pressed="false">说明：隐藏</button>
     </header>
     <main class="layout">
       <aside id="overviewPanel" class="panel">
@@ -174,7 +175,7 @@
 <!-- LOCKED:NOTES:END -->
 
 <!-- EDITABLE:CONFIG:START -->
-<script>window.DEMO_CONFIG = {title:"产品 Demo 母版预览",overview:"验证固定三栏讲解框架与业务流程概览入口。",businessFlow:{title:"从需求到业务结果",summary:"先理解用户目标与完整业务链路，再查看具体产品页面。",outcome:"流程概览帮助阅读者快速理解方案服务的业务场景。",boundary:"这是母版自带的交互预览数据，正式 Demo 会由已确认需求替换。",stages:[{id:"understand",label:"理解业务场景",summary:"确认角色、目标与关键规则",actions:[{role:"需求方",kind:"trigger",mode:"offline",location:"需求沟通",text:"说明业务目标与现状"}],records:[]},{id:"demo",label:"查看方案页面",summary:"沿流程查看产品页面及交互",actions:[{role:"产品 Demo",kind:"execute",mode:"online",system:"本 Demo",text:"展示页面方案及关键状态"}],records:[{name:"已确认需求与页面说明（示意）",sampleData:"业务目标 · 流程阶段 · 页面方案"}]}]},pages:[{id:"template-preview",label:"母版预览",overview:"验证原型入口与母版业务流程概览。",surface:"custom-admin",viewport:{width:980,height:720},p0:["P0-TEMPLATE"],visual:{status:"none"},states:[{id:"default",label:"母版预览"}],notes:{description:"这是母版本身的交互预览，不是交付 Demo 页面。",groups:[],result:"进入后默认展示业务流程概览；可从左栏切换到预览页面。",boundary:"脚手架组装正式 Demo 时会用对应系统外壳及业务配置替换此预览。"}}]};</script>
+<script>window.DEMO_CONFIG = {title:"产品 Demo 母版预览",overview:"验证固定三栏讲解框架与业务流程概览入口。",businessFlow:{title:"从需求到业务结果",summary:"先理解用户目标与完整业务链路，再查看具体产品页面。",outcome:"流程概览帮助阅读者快速理解方案服务的业务场景。",boundary:"这是母版自带的交互预览数据，正式 Demo 会由已确认需求替换。",stages:[{id:"understand",label:"理解业务场景",summary:"确认角色、目标与关键规则",actions:[{role:"需求方",kind:"trigger",mode:"offline",location:"需求沟通",text:"说明业务目标与现状"}],records:[]},{id:"demo",label:"查看方案页面",summary:"沿流程查看产品页面及交互",actions:[{role:"产品 Demo",kind:"execute",mode:"online",system:"本 Demo",text:"展示页面方案及关键状态"}],records:[{name:"已确认需求与页面说明（示意）",sampleData:"业务目标 · 流程阶段 · 页面方案"}]}]},pages:[{id:"template-preview",label:"母版预览",overview:"验证原型入口与母版业务流程概览。",surface:"custom-admin",ui:{profile:"desktop-default",layout:"mixed"},viewport:{width:980,height:720},p0:["P0-TEMPLATE"],visual:{status:"none"},states:[{id:"default",label:"母版预览"}],notes:{description:"这是母版本身的交互预览，不是交付 Demo 页面。",groups:[],result:"进入后默认展示业务流程概览；可从左栏切换到预览页面。",boundary:"脚手架组装正式 Demo 时会用对应系统外壳及业务配置替换此预览。"}}]};</script>
 <!-- EDITABLE:CONFIG:END -->
 
 <!-- LOCKED:RUNTIME:START -->
@@ -262,6 +263,7 @@
         button.append(createIcon(iconName), label);
       };
 /* INCLUDE:MALL_RUNTIME */
+    /* INCLUDE:BUSINESS_UI_RUNTIME */
       if (pageById.size !== config.pages.length) throw new Error("DEMO_CONFIG.pages.id 不得重复");
       for (const page of config.pages) {
         const panel = $("[data-page-panel=\"" + CSS.escape(page.id) + "\"]");
@@ -272,6 +274,7 @@
         if (height > 0) { panel.style.height = `${height}px`; panel.style.minHeight = `${height}px`; }
         panel.dataset.state = "default";
         panel.dataset.surface = page.surface;
+        attachUiProfile(page, panel);
         if (page.surface === "mall-admin") renderMallAdminShell(page.id);
       }
 
@@ -492,6 +495,7 @@
 
       const showBusinessFlow = () => {
         if (!hasBusinessFlow) return;
+        finishUiDialog("navigation", true, false);
         navigation.page = businessFlowPageId;
         $("#businessFlowPanel").hidden = false;
         for (const panel of $$("[data-page-panel]")) panel.hidden = true;
@@ -503,6 +507,7 @@
 
       const showPage = (pageId) => {
         if (!pageById.has(pageId)) throw new Error(`未知页面：${pageId}`);
+        if (navigation.page !== pageId) finishUiDialog("navigation", true, false);
         navigation.page = pageId;
         $("#businessFlowPanel").hidden = true;
         for (const panel of $$("[data-page-panel]")) panel.hidden = panel.dataset.pagePanel !== navigation.page;
@@ -608,6 +613,8 @@
       else showPage(config.pages[0].id);
       window.productDemo = {
         audit,
+        auditUI,
+        openDialog,
         showPage,
         setPageState,
         setSide,

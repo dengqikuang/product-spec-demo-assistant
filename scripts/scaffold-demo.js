@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 const { compose } = require("./shell-library");
+const uiManifest = require("../assets/business-ui/manifest.json");
 const systemIndex = process.argv.indexOf("--system");
 const systemId = systemIndex < 0 ? "mall-admin" : process.argv[systemIndex + 1];
 
@@ -199,11 +200,39 @@ const validateTerminal = (page, html, style) => {
     errors.push(`${page.id}.terminal must be "mini-program", "app", or "h5" for a mobile page`);
     return errors;
   }
-  if (page.terminal === 'mini-program' && !/\bmini-(?:program-system-ui|capsule)\b/.test(html)) errors.push(`${page.id} is mini-program but lacks the reusable mini-program chrome`);
-  if (page.terminal !== 'mini-program' && /\bmini-(?:program-system-ui|capsule|close-program)\b/.test(html + style)) errors.push(`${page.id} is ${page.terminal}; remove the mini-program capsule and chrome`);
-  if (/\b(?:es-)?mobile-device\b/.test(html + style)) errors.push(`${page.id} must use the fixed mobile canvas, not a simulated device frame`);
-  if (/\b(?:width|height)\s*:\s*min\(\s*(?:390px|844px)/i.test(style)) errors.push(`${page.id} must keep a fixed 390×844 mobile canvas; do not use min() to shrink it`);
+  const miniChromeClasses = new Set(['mini-program-system-ui', 'mini-status-bar', 'mini-status-icons', 'mini-cellular', 'mini-wifi', 'mini-battery', 'mini-capsule', 'mini-close-program']);
+  const htmlClasses = new Set([...html.matchAll(/\bclass=["']([^"']+)["']/gi)].flatMap((match) => match[1].split(/\s+/)));
+  const hasMiniChrome = [...miniChromeClasses].some((name) => htmlClasses.has(name));
+  if (page.terminal === 'mini-program' && !htmlClasses.has('mini-program-system-ui')) errors.push(`${page.id} is mini-program but lacks the reusable mini-program system layer`);
+  if (page.terminal !== 'mini-program' && hasMiniChrome) errors.push(`${page.id} is ${page.terminal}; remove the mini-program capsule and chrome`);
+  if (/\b(?:es-)?mobile-device\b/.test(html)) errors.push(`${page.id} must use the fixed mobile canvas, not a simulated device frame`);
+  const classes = new Set([...html.matchAll(/\bclass=["']([^"']+)["']/gi)].flatMap((match) => match[1].split(/\s+/)));
+  const escapedClasses = [...classes].map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  if (escapedClasses.some((name) => new RegExp(`\\.${name}\\b[^{}]*\\{[^{}]*\\b(?:width|height)\\s*:\\s*min\\(\\s*(?:390px|844px)`, "i").test(style))) errors.push(`${page.id} must keep a fixed mobile canvas; do not shrink it with min()`);
   if (/[\u{1F300}-\u{1FAFF}]/u.test(html)) errors.push(`${page.id} must use SVG or data-demo-icon for mobile UI icons, not Emoji`);
+  return errors;
+};
+const validateBusinessUI = (page, html) => {
+  const errors = [];
+  const terminal = page.surface === "mobile" ? page.terminal : "pc-web";
+  const profile = page.ui?.profile;
+  const layout = page.ui?.layout;
+  if (!page.ui || typeof page.ui !== "object" || Array.isArray(page.ui)) return [`${page.id}.ui must declare a profile and layout`];
+  if (typeof profile !== "string" || !Object.hasOwn(uiManifest.profiles, profile)) errors.push(`${page.id}.ui.profile must be a registered system profile`);
+  else {
+    if (uiManifest.profiles[profile].terminal !== terminal) errors.push(`${page.id}.ui.profile ${profile} is not compatible with terminal ${terminal}`);
+    if (uiManifest.profiles[profile].surface !== page.surface) errors.push(`${page.id}.ui.profile ${profile} is not compatible with surface ${page.surface}`);
+  }
+  if (!uiManifest.layouts.includes(layout)) errors.push(`${page.id}.ui.layout must be one of: ${uiManifest.layouts.join(", ")}`);
+  for (const match of html.matchAll(/\bdata-ui-recipe=["']([^"']+)["']/gi)) {
+    const name = match[1];
+    const recipe = uiManifest.recipes[name];
+    if (!recipe) errors.push(`${page.id} uses unknown UI recipe: ${name}`);
+    else {
+      if (!recipe.terminals.includes(terminal)) errors.push(`${page.id} recipe ${name} is not compatible with terminal ${terminal}`);
+      if (!recipe.layouts.includes(layout)) errors.push(`${page.id} recipe ${name} is not compatible with ${layout} layout`);
+    }
+  }
   return errors;
 };
 const validateDeclaredStateCalls = (config, script) => {
@@ -362,6 +391,7 @@ if (checkShell) {
       errors.push(...validateVisualConfig(page));
       const blocks = productHtml.split(/(?=<[a-z][\w-]*\b[^>]*\bdata-page-panel=)/i);
       const pageHtml = blocks.find((block) => block.match(/\bdata-page-panel=["']([^"']+)["']/)?.[1] === page.id) || "";
+      errors.push(...validateBusinessUI(page, pageHtml));
       errors.push(...validateAdminShell(page, pageHtml));
       errors.push(...validateTerminal(page, pageHtml, shellAsset ? "" : productStyle));
       if (page.surface !== "mall-admin" && /\bdata-admin-(?:shell|content)\b/.test(pageHtml)) errors.push(`${page.id} must not contain mall admin nodes`);

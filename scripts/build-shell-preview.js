@@ -12,7 +12,7 @@ for (const id of shellIds()) {
   const context = {window:{}};
   vm.runInNewContext(get('CONFIG').match(/<script>([\s\S]*)<\/script>/)[1],context,{timeout:100});
   for (const page of context.window.DEMO_CONFIG.pages) {
-    page.label = `${id === 'mall-admin' ? '商城后台' : id === 'middle-platform' ? '中台系统' : id === 'mini-program' ? '微信小程序' : id === 'mobile' ? 'APP / H5' : id} · ${page.label}`;
+    page.label = `${id === 'mall-admin' ? '商城后台' : id === 'middle-platform' ? '中台系统' : id === 'supplier-admin' ? '供应商后台' : id === 'mini-program' ? '微信小程序' : id === 'mobile' ? 'APP / H5' : id} · ${page.label}`;
     pages.push(page);
   }
   parts.PRODUCT_STYLE.push(get('PRODUCT_STYLE').match(/@scope \(\[data-page-panel\]\)\s*\{([\s\S]*)\}\s*<\/style>/)[1].replace(/:scope\s*\{[^}]*\}/g,''));

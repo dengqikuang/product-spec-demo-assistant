@@ -1,0 +1,16 @@
+<script>
+const supplierPage = productDemo.getPage("supplier-onboarding");
+const supplierShell = supplierPage.querySelector("[data-supplier-shell]");
+const supplierToggle = supplierPage.querySelector("[data-supplier-toggle]");
+supplierToggle.onclick = () => {
+  const expanded = supplierToggle.getAttribute("aria-expanded") !== "true";
+  supplierToggle.setAttribute("aria-expanded", String(expanded));
+  supplierPage.querySelector("#supplier-submenu").hidden = !expanded;
+};
+const sidebarToggle = supplierPage.querySelector("[data-sidebar-toggle]");
+sidebarToggle.onclick = () => {
+  const collapsed = supplierShell.classList.toggle("is-collapsed");
+  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+  sidebarToggle.setAttribute("aria-label", collapsed ? "展开侧栏" : "收起侧栏");
+};
+</script>
